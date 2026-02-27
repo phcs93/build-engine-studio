@@ -78,3 +78,11 @@ div.margin-large { margin: 32px; }
 div.padding-small { padding: 8px; }
 div.padding-medium { padding: 16px;}
 div.padding-large { padding: 32px;}
+
+div.flex-columns > .flex-end {
+    margin-left: auto;
+}
+
+div.flex-rows > .flex-end {
+    margin-top: auto;
+}

@@ -9,7 +9,7 @@
         <script src="lib/polyfills/html-import/html-import.js"></script>
 
         <!-- components -->
-        <link rel="import" href="src/components/nav-bar/nav-bar.html">
+        <link rel="import" href="src/components/nav-control/nav-control.html">
         <link rel="import" href="src/components/file-tree/file-tree.html">
 
         <!-- index -->
@@ -29,9 +29,12 @@
 
         <div class="flex-columns">
 
-            <nav-bar>
-                <div id="div1">div1</div>
-            </nav-bar>
+            <nav-control>
+                <div data-nav-name="div1" data-nav-icon="res/icons/files.svg">div1</div>
+                <div data-nav-name="div2" data-nav-icon="res/icons/files.svg">div2</div>
+                <div data-nav-name="div3" data-nav-icon="res/icons/files.svg">div3</div>
+                <div data-nav-name="settings" data-nav-icon="res/icons/settings.svg" data-nav-class="flex-end">settings</div>
+            </nav-control>
             <!-- <file-tree></file-tree> -->
 
         </div>
