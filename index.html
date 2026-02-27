@@ -1,0 +1,41 @@
+<html>
+
+    <head>
+
+        <!-- title -->
+        <title>Build Engine Studio</title>
+
+        <!-- polyfills -->
+        <script src="lib/polyfills/html-import/html-import.js"></script>
+
+        <!-- components -->
+        <link rel="import" href="src/components/nav-bar/nav-bar.html">
+        <link rel="import" href="src/components/file-tree/file-tree.html">
+
+        <!-- index -->
+        <link rel="stylesheet" href="index.css">
+        <script src="index.js"></script>
+
+        <!-- styles -->
+        <link rel="stylesheet" href="src/styles/flex.css">
+        <link rel="stylesheet" href="src/styles/style.css">
+
+        <!-- metas -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+
+    </head>
+
+    <body>
+
+        <div class="flex-columns">
+
+            <nav-bar>
+                <div id="div1">div1</div>
+            </nav-bar>
+            <!-- <file-tree></file-tree> -->
+
+        </div>
+
+    </body>
+
+</html>

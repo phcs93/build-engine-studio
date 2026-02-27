@@ -1,0 +1,41 @@
+{
+  "name": "build-engine-studio",
+  "version": "1.0.0",
+  "description": "A tool for editing all kinds of Build Engine files.",
+  "homepage": "https://github.com/phcs93/build-engine-studio#readme",
+  "bugs": {
+    "url": "https://github.com/phcs93/build-engine-studio/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phcs93/build-engine-studio.git"
+  },
+  "license": "ISC",
+  "author": "phcs93",
+  "main": "main.ts",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@electron/remote": "^2.1.3"
+  },
+  "devDependencies": {
+    "electron": "^40.6.1",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    }
+  }
+}
