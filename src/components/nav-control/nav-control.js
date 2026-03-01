@@ -1,4 +1,4 @@
-    customElements.define("nav-control", class NavControl extends HTMLElement {
+customElements.define("nav-control", class NavControl extends HTMLElement {
 
     constructor() {
         super();
@@ -19,7 +19,7 @@
                     navControlButtons.insertAdjacentHTML("beforeend", `
                         <input type="radio" name="nav-control" id="nav-control-${child.dataset.navName}" ${index === 0 ? "checked" : ""} />
                         <label for="nav-control-${child.dataset.navName}" ${child.dataset.navClass ? `class="${child.dataset.navClass}"` : ""}>
-                            <img src="${child.dataset.navIcon}" alt="${child.dataset.navName}">
+                            <img src="${child.dataset.navIcon}" alt="${child.dataset.navName}" title="${child.dataset.navName}" />
                         </label>
                     `);
 
@@ -33,24 +33,4 @@
 
     }
 
-    // static get observedAttributes() {
-    //     return [];
-    // }
-
-    // connectedCallback() { }
-    // disconnectedCallback() { }
-    // adoptedCallback() { }
-
-    // attributeChangedCallback(property, oldValue, newValue) {
-    //     if (oldValue === newValue) return;
-    //     this[property] = newValue;
-    // }
-
 });
-
-// shadow dom = dom can only be acessed by internal js and css (global css wont affect shadow elements)
-// shadow dom = internal js and css cannot access outside
-// template slots = allow insertion of html elements in determiend slots
-// template slots = only works with a shadow dom (absolute garbage restriction)
-// attribute shadowrootmode="open" = allows access to the shadow dom from outside js via element.shadowRoot
-// attribute shadowrootmode="closed" = does not allow access to the shadow dom from outside js via element.shadowRoot

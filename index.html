@@ -10,7 +10,8 @@
 
         <!-- components -->
         <link rel="import" href="src/components/nav-control/nav-control.html">
-        <link rel="import" href="src/components/file-tree/file-tree.html">
+        <link rel="import" href="src/components/game-file-editor/game-file-editor.html">
+        <link rel="import" href="src/components/file-control/file-control.html">
 
         <!-- index -->
         <link rel="stylesheet" href="index.css">
@@ -30,12 +31,10 @@
         <div class="flex-columns">
 
             <nav-control>
-                <div data-nav-name="div1" data-nav-icon="res/icons/files.svg">div1</div>
-                <div data-nav-name="div2" data-nav-icon="res/icons/files.svg">div2</div>
-                <div data-nav-name="div3" data-nav-icon="res/icons/files.svg">div3</div>
-                <div data-nav-name="settings" data-nav-icon="res/icons/settings.svg" data-nav-class="flex-end">settings</div>
+                <game-file-editor data-nav-name="Game File Editor" data-nav-icon="res/icons/file.pack.svg"></game-file-editor>
+                <div data-nav-name="Tiles CFG Editor" data-nav-icon="res/icons/file.cfg.svg">div2</div>
+                <div data-nav-name="Settings" data-nav-icon="res/icons/settings.svg" data-nav-class="flex-end">settings</div>
             </nav-control>
-            <!-- <file-tree></file-tree> -->
 
         </div>
 

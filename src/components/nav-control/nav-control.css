@@ -27,19 +27,19 @@ nav-control {
 
     }
 
-    & div#nav-control-content > div {
+    & div#nav-control-content > * {
         display: none;
     }
 
-    &:has(input[type="radio"]:nth-of-type(1):checked) div#nav-control-content > div:nth-child(1),
-    &:has(input[type="radio"]:nth-of-type(2):checked) div#nav-control-content > div:nth-child(2),
-    &:has(input[type="radio"]:nth-of-type(3):checked) div#nav-control-content > div:nth-child(3),
-    &:has(input[type="radio"]:nth-of-type(4):checked) div#nav-control-content > div:nth-child(4),
-    &:has(input[type="radio"]:nth-of-type(5):checked) div#nav-control-content > div:nth-child(5),
-    &:has(input[type="radio"]:nth-of-type(6):checked) div#nav-control-content > div:nth-child(6),
-    &:has(input[type="radio"]:nth-of-type(7):checked) div#nav-control-content > div:nth-child(7),
-    &:has(input[type="radio"]:nth-of-type(8):checked) div#nav-control-content > div:nth-child(8),
-    &:has(input[type="radio"]:nth-of-type(9):checked) div#nav-control-content > div:nth-child(9) {
+    &:has(input[type="radio"]:nth-of-type(1):checked) div#nav-control-content > :nth-child(1),
+    &:has(input[type="radio"]:nth-of-type(2):checked) div#nav-control-content > :nth-child(2),
+    &:has(input[type="radio"]:nth-of-type(3):checked) div#nav-control-content > :nth-child(3),
+    &:has(input[type="radio"]:nth-of-type(4):checked) div#nav-control-content > :nth-child(4),
+    &:has(input[type="radio"]:nth-of-type(5):checked) div#nav-control-content > :nth-child(5),
+    &:has(input[type="radio"]:nth-of-type(6):checked) div#nav-control-content > :nth-child(6),
+    &:has(input[type="radio"]:nth-of-type(7):checked) div#nav-control-content > :nth-child(7),
+    &:has(input[type="radio"]:nth-of-type(8):checked) div#nav-control-content > :nth-child(8),
+    &:has(input[type="radio"]:nth-of-type(9):checked) div#nav-control-content > :nth-child(9) {
         /* I hardly believe there will be more than 9 items on the side bar */
         display: block;
     }
