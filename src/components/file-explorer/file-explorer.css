@@ -1,0 +1,45 @@
+file-explorer {
+
+    display: flex;
+    width: 256px;
+    height: 100%;
+    background-color: #0E0E0E;
+
+    div#files {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        ul, li {
+            list-style: none;
+            margin: 0px;
+            padding: 0px;
+            user-select: none;
+        }
+        ul > ul {
+            margin-left: 20px;
+        }
+        li:not(div > ul > li:first-child) {
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        li:hover {
+            cursor: pointer; 
+            background-color: #232323;
+            border-radius: 5px;
+        }
+        li::before {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-image: url("../../../res/icons/file.svg");
+            background-size: contain;
+            background-repeat: no-repeat;
+            margin-right: 8px;
+        }
+    }
+
+}
+

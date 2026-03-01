@@ -2,7 +2,7 @@ nav-control {
 
     display: flex;
     flex-grow: 1;
-    height: 100%;
+    height: 100vh;
 
     & div#nav-control-buttons {
 
@@ -41,7 +41,7 @@ nav-control {
     &:has(input[type="radio"]:nth-of-type(8):checked) div#nav-control-content > :nth-child(8),
     &:has(input[type="radio"]:nth-of-type(9):checked) div#nav-control-content > :nth-child(9) {
         /* I hardly believe there will be more than 9 items on the side bar */
-        display: block;
+        display: flex;
     }
 
 }

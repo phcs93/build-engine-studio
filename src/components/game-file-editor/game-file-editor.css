@@ -1,3 +1,7 @@
 game-file-editor {
     
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+
 }
