@@ -53,10 +53,22 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
             for (const file of files) {
 
-                elements.push(`<li>${file.name}</li>`);
-
                 if (file.files && file.files.length > 0) {
+                    elements.push(`
+                        <li>
+                            <label class="debug">
+                                <input type="checkbox">
+                                <span>${file.name}</span>
+                            </label>                            
+                        </li>
+                    `);
                     elements.push(generateHTML(file.files));
+                } else {
+                    elements.push(`
+                        <li>
+                            <span>${file.name}</span>
+                        </li>
+                    `);
                 }
 
             }

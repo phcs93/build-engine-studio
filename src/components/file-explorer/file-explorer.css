@@ -17,23 +17,45 @@ file-explorer {
             padding: 0px;
             user-select: none;
         }
-        ul > ul {
-            margin-left: 20px;
+        ul > ul > li {
+            padding-left: calc(32px + 8px);
         }
         li:not(div > ul > li:first-child) {
-            padding-top: 2px;
-            padding-bottom: 2px;
+            /* padding-top: 4px;
+            padding-bottom: 4px; */
         }
         li:hover {
             cursor: pointer; 
             background-color: #232323;
             border-radius: 5px;
         }
-        li::before {
+        li > label > input[type="checkbox"] {
+            display: none;
+        }
+        /* li > label::before {
+            cursor: pointer; 
             content: "";
             display: inline-block;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        li > label:has(input[type="checkbox"]:not(:checked))::before {
+            background-image: url("../../../res/icons/arrow-right.svg");
+        }
+        li > label:has(input[type="checkbox"]:checked)::before {
+            background-image: url("../../../res/icons/arrow-down.svg");
+        } */
+        li:has(input[type="checkbox"]:not(:checked)) + ul {
+            display: none;
+        }        
+        li > span::before {
+            content: "";
+            display: inline-block;
+            width: 16px;
+            height: 16px;
             background-image: url("../../../res/icons/file.svg");
             background-size: contain;
             background-repeat: no-repeat;

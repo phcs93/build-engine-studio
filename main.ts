@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import remote from "@electron/remote/main/index.js";
+import menu from "electron-context-menu";
 
 app.whenReady().then(async () => {
 
@@ -20,6 +21,7 @@ app.whenReady().then(async () => {
     remote.initialize();
     remote.enable(win.webContents);  
     
+    app.isPackaged || menu();
     app.isPackaged || win.webContents.openDevTools();
     
     win.setMenuBarVisibility(false);

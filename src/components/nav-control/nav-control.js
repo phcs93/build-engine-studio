@@ -17,8 +17,8 @@ customElements.define("nav-control", class NavControl extends HTMLElement {
                 if (child.dataset.navName && child.dataset.navIcon) {
 
                     navControlButtons.insertAdjacentHTML("beforeend", `
-                        <input type="radio" name="nav-control" id="nav-control-${child.dataset.navName}" ${index === 0 ? "checked" : ""} />
-                        <label for="nav-control-${child.dataset.navName}" ${child.dataset.navClass ? `class="${child.dataset.navClass}"` : ""}>
+                        <label ${child.dataset.navClass ? `class="${child.dataset.navClass}"` : ""}>
+                            <input type="radio" name="nav-control" ${index === 0 ? "checked" : ""} />
                             <img src="${child.dataset.navIcon}" alt="${child.dataset.navName}" title="${child.dataset.navName}" />
                         </label>
                     `);

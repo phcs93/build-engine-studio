@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Electron: Start",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm start",
+      "cwd": "${workspaceFolder}/build-engine-studio"
+    },
+    {
+      "name": "Electron: Debug",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm debug",
+      "cwd": "${workspaceFolder}/build-engine-studio"
+    },
+    {
+      "name": "Electron: Attach Main",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "timeout": 10000
+    },
+    {
+        "name": "Electron: Attach Renderer",
+        "type": "chrome",
+        "request": "attach",
+        "port": 9222,
+        "webRoot": "${workspaceFolder}/build-engine-studio"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Electron: Debug + Attach",
+      "configurations": [
+        "Electron: Debug",
+        "Electron: Attach Main",
+        "Electron: Attach Renderer"
+      ]
+    }
+  ]
+}

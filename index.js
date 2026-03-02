@@ -1,4 +1,6 @@
 const electron = require("@electron/remote");
+const webContents = electron.getCurrentWebContents();
+const app = electron.app;
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -12,6 +14,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector(":root").style.setProperty("--accent-color", `#${color}`);
         document.querySelector(":root").style.setProperty("--contrast-color", `#${getContrastColor(color)}`);
     });
+
+    if (!app.isPackaged) {
+        document.body.onwheel = e => {        
+            if (e.ctrlKey) {
+                const zoom = (parseInt(webContents.getZoomFactor() * 100) / 100) + (e.deltaY < 0 ? 0.2 : -0.2);
+                webContents.zoomFactor = zoom <= 0.0 ? 0.1 : (zoom >= 5.0 ? 5.0 : zoom);
+            }
+        };
+        document.body.onmousedown  = e => {
+            if (e.ctrlKey && e.button === 1) {
+                webContents.zoomFactor = 1.0;
+            }
+        }
+    } else {
+        webContents.zoomFactor = 1.0;
+    }
 
 });
 
