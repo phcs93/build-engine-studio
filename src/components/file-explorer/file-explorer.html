@@ -3,19 +3,27 @@
 
 <template id="file-explorer">
 
-    <div class="flex-rows flex-grow padding-medium flex-gap-medium">
+    <div class="flex-rows flex-grow">
 
-        <label>FILE EXPLORER</label>
-        <hr>
+        <div class="flex-rows flex-gap-medium padding-medium">
+
+            <label>FILE EXPLORER</label>
+            <hr>
+
+        </div>
 
         <div id="files">
 
         </div>
 
-        <label for="open-file-button">
-            OPEN FILE
-            <input type="file" id="open-file-button" class="flex-end" multiple>
-        </label>
+        <div class="flex-rows flex-gap-medium flex-end padding-medium">
+
+            <label for="open-file-button">
+                OPEN FILE
+                <input type="file" id="open-file-button" multiple>
+            </label>
+
+        </div>
 
     </div>
     

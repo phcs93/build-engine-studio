@@ -39,6 +39,9 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
             })));
 
+            // reset value so that the same file can be selected again if needed
+            event.target.value = "";
+
             this.render();
 
         };
@@ -47,28 +50,33 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     render() {
 
-        const generateHTML = files => {
+        const generateHTML = (files, level) => {
             
             const elements = [];
 
             for (const file of files) {
 
+                elements.push(`
+                    <li>
+                        <label>
+                            <div class="flex-columns">
+                                <div>
+                                    ${"<div class=\"ident\"></div>".repeat(level)}
+                                </div>
+                                <div class="flex">
+                                    <input type="checkbox">
+                                    <div class="caret"></div>
+                                </div>
+                                <div>
+                                    <span>${file.name}</span>
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                `);
+
                 if (file.files && file.files.length > 0) {
-                    elements.push(`
-                        <li>
-                            <label class="debug">
-                                <input type="checkbox">
-                                <span>${file.name}</span>
-                            </label>                            
-                        </li>
-                    `);
-                    elements.push(generateHTML(file.files));
-                } else {
-                    elements.push(`
-                        <li>
-                            <span>${file.name}</span>
-                        </li>
-                    `);
+                    elements.push(generateHTML(file.files, level + 1));
                 }
 
             }
@@ -77,7 +85,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
         };
 
-        document.getElementById("files").innerHTML = generateHTML(Globals.Files);
+        document.getElementById("files").innerHTML = generateHTML(Globals.Files, 0);
 
     }
 

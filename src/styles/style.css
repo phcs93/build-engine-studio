@@ -42,7 +42,6 @@ label > input[type="file"] {
 
 ::-webkit-scrollbar {    
     background-color: transparent;
-    /* height: 4px; */
     width: 8px;
 }
 

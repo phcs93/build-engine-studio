@@ -1,66 +1,113 @@
 file-explorer {
 
+    /* make it a flex container and set a fixed width */
     display: flex;
     width: 256px;
     height: 100%;
-    background-color: #0E0E0E;
+    background-color: #0F0F0F;
 
+    /* default item height for files */
+    --item-height: 27px;
+
+    /* main section of the file tree */
     div#files {
-        flex: 1;
+
+        /* make it scrollable */
+        flex: 1; 
+        scrollbar-gutter: stable;
         overflow-y: auto;
         overflow-x: hidden;
         margin: 0;
         padding: 0;
+
+        /* sets default style for all children of file explorer */
+        * {
+            font-weight: normal;
+            font-family: "Segoe WPC", "Segoe UI", sans-serif;
+            cursor: pointer;
+        }
+
+        /* remove all styling from default lists */
         ul, li {
             list-style: none;
             margin: 0px;
             padding: 0px;
             user-select: none;
         }
-        ul > ul > li {
-            padding-left: calc(32px + 8px);
-        }
-        li:not(div > ul > li:first-child) {
-            /* padding-top: 4px;
-            padding-bottom: 4px; */
-        }
-        li:hover {
-            cursor: pointer; 
-            background-color: #232323;
-            border-radius: 5px;
-        }
-        li > label > input[type="checkbox"] {
-            display: none;
-        }
-        /* li > label::before {
-            cursor: pointer; 
-            content: "";
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-size: contain;
-            background-repeat: no-repeat;
+
+        /* set label to display block so it takes up the full width and height */
+        /* this is useful for making the clickable area bigger for the checkbox toggle */
+        /* and also for the hover effect to highlight the whole item */
+        li label {
+            display: block;
+            height: var(--item-height);
+            line-height: var(--item-height);
+            /* set hover effect for labels */
+            &:hover {
+                background-color: #232323;
+            }
         }
 
-        li > label:has(input[type="checkbox"]:not(:checked))::before {
-            background-image: url("../../../res/icons/arrow-right.svg");
+        /* markers to both ident the item and to draw a straight line on the left */
+        li label div.ident {
+            height: var(--item-height);
+            margin-left: 10px;
+            margin-right: 7px;
+            border-left: 1px solid #2B2B2B;
         }
-        li > label:has(input[type="checkbox"]:checked)::before {
-            background-image: url("../../../res/icons/arrow-down.svg");
-        } */
-        li:has(input[type="checkbox"]:not(:checked)) + ul {
+
+        /* hide checkbox input and render caret in its place instead */
+        li label input[type="checkbox"] {
             display: none;
-        }        
-        li > span::before {
-            content: "";
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-image: url("../../../res/icons/file.svg");
+        }
+
+        /* caret for indication of foldable items */
+        li label div.caret {
+            width: calc(var(--item-height) / 2 );
+            height: calc(var(--item-height) / 2 );
+            margin-left: 4px;
+            margin-right: 4px;
             background-size: contain;
             background-repeat: no-repeat;
-            margin-right: 8px;
+            justify-self: center;
+            align-self: center;
         }
+
+        /* doing this saves us the hassle of adding placeholder space for non foldable items */
+        li:not(:has(+ul)) label div.caret {
+            visibility: hidden;
+        }
+
+        /* open/closed caret icon */
+        li label input[type="checkbox"]:checked + div.caret {
+            background-image: url("../../../res/icons/arrow-right.svg");
+        }
+        li label input[type="checkbox"]:not(:checked) + div.caret {
+            background-image: url("../../../res/icons/arrow-down.svg");
+        }
+
+        /* inversed condition so the listing starts open */
+        li:has(input[type="checkbox"]:checked) + ul {
+            display: none;
+        }
+
+        /* file icon */
+        li label span {
+            display: flex;
+            &::before {
+                content: "";
+                display: inline-block;
+                align-self: center;
+                justify-self: center;
+                width: calc(var(--item-height) / 2 );
+                height: calc(var(--item-height) / 2 );
+                background-image: url("../../../res/icons/file.svg");
+                background-size: contain;
+                background-repeat: no-repeat;
+                margin-right: 4px;
+            }
+        }
+
     }
 
 }
