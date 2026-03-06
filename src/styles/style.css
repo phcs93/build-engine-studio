@@ -11,6 +11,23 @@ hr {
     border-bottom: 1px solid #2B2B2B;
 }
 
+input[type="text"] {
+    font-family: "Segoe UI";
+    font-size: 16px;
+    height: 32px;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: lightgray;
+    background-color: #090909;
+    border-radius: 5px;
+    border: 1px solid #2B2B2B;
+    flex-grow: 1;
+    outline: none;
+    &:focus {
+        border: 1px solid var(--accent-color);
+    }
+}
+
 label:has(>input[type="file"]), button {
     font-family: "Candara";
     font-size: 14px;

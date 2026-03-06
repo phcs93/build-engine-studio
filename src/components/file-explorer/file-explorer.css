@@ -9,6 +9,25 @@ file-explorer {
     /* default item height for files */
     --item-height: 27px;
 
+    /* search icon */
+    div.appended-icon {
+        position: relative;
+        &::after {
+            content: "";
+            display: block;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);        
+            width: 16px;
+            height: 16px;
+            background-image: url("../../../res/icons/search.svg");
+            background-repeat: no-repeat;
+            background-size: 16px 16px;
+            pointer-events: none;
+        }
+    }
+
     /* main section of the file tree */
     div#files {
 
@@ -16,7 +35,7 @@ file-explorer {
         flex: 1; 
         scrollbar-gutter: stable;
         overflow-y: auto;
-        overflow-x: hidden;
+        overflow-x: auto;
         margin: 0;
         padding: 0;
 
@@ -33,6 +52,14 @@ file-explorer {
             margin: 0px;
             padding: 0px;
             user-select: none;
+        }
+
+        /* add line to indicate where file will be dropped */
+        li.drag-over-top {
+            box-shadow: inset 0 1px 0 var(--accent-color);
+        }
+        li.drag-over-bottom {
+            box-shadow: inset 0 -1px 0 var(--accent-color);
         }
 
         /* set label to display block so it takes up the full width and height */
@@ -92,20 +119,10 @@ file-explorer {
         }
 
         /* file icon */
-        li label span {
-            display: flex;
-            &::before {
-                content: "";
-                display: inline-block;
-                align-self: center;
-                justify-self: center;
-                width: calc(var(--item-height) / 2 );
-                height: calc(var(--item-height) / 2 );
-                background-image: url("../../../res/icons/file.svg");
-                background-size: contain;
-                background-repeat: no-repeat;
-                margin-right: 4px;
-            }
+        li label img {
+            width: calc(var(--item-height) / 2 );
+            height: calc(var(--item-height) / 2 );
+            margin-right: 4px;
         }
 
     }

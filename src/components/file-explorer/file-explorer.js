@@ -1,3 +1,6 @@
+const crypto = require("crypto");
+const fs = require("fs");
+
 customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     constructor() {
@@ -7,35 +10,42 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     connectedCallback() {
 
+        // open file event
         document.getElementById("open-file-button").onchange = async event => {
 
-            await Promise.all(Array.from(event.target.files).map(file => new Promise(resolve => {
+            await Promise.all(Array.from(event.target.files).map(uploadedFile => new Promise(resolve => {
 
                 const reader = new FileReader();
 
                 reader.onload = () => {
+
+                    const recursiveIterateFiles = (fileName, bytes) => {
+
+                        const extension = fileName.split(".").at(-1).toUpperCase();
+
+                        const entry = {
+                            id: crypto.randomUUID(),
+                            name: fileName,
+                            bytes: bytes
+                        };
+
+                        // check if file is a storage type so we can list its files
+                        if (["GRP", "RFF", "PK3", "SSI"].some(ext => ext === extension)) {
+                            const storage = Build.Models.Storage.Unserialize(bytes);                                
+                            entry.files = storage.Files.map(f => recursiveIterateFiles(f.name, f.bytes));
+                        }
+
+                        return entry;
+
+                    };
                     
-                    const extension = file.name.split(".").at(-1).toUpperCase();
-
-                    Globals.Files.push({
-                        name: file.name,
-                        bytes: new Uint8Array(reader.result)
-                    });
-
-                    // check if file is a storage type so we can list its files
-                    if (["GRP", "RFF", "PK3", "SSI"].some(ext => ext === extension)) {
-                        const storage = Build.Models.Storage.Unserialize(Globals.Files[Globals.Files.length-1].bytes);
-                        Globals.Files[Globals.Files.length-1].files = storage.Files.map(f => ({
-                            name: f.name,
-                            bytes: f.bytes
-                        }));
-                    }
+                    Globals.Files.push(recursiveIterateFiles(uploadedFile.name, new Uint8Array(reader.result)));
 
                     resolve();
 
                 };
 
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer(uploadedFile);
 
             })));
 
@@ -46,9 +56,72 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
         };
 
+        // drag file event
+        document.getElementById("files").addEventListener("dragstart", event => {
+            if (event.target.tagName.toLowerCase() === "li") {
+                event.dataTransfer.setData("text/plain", event.target.dataset.id);
+            }
+        });
+
+        // drag file over event
+        document.getElementById("files").addEventListener("dragover", event => {
+            event.preventDefault();
+            const ul = event.target.closest("ul");
+            if (ul) {                
+                const target = event.target.closest("li");
+                const rect = target.getBoundingClientRect();
+                const offset = event.clientY - rect.top;
+                if (offset < rect.height / 2) {
+                    target.classList.add("drag-over-top");
+                    target.classList.remove("drag-over-bottom");
+                } else {
+                    target.classList.add("drag-over-bottom");
+                    target.classList.remove("drag-over-top");
+                }
+            }
+        });
+
+        // drag file leave event
+        document.getElementById("files").addEventListener("dragleave", event => {
+            event.preventDefault();
+            const ul = event.target.closest("ul");
+            if (ul) {                
+                const target = event.target.closest("li");
+                target.classList.remove("drag-over-bottom");
+                target.classList.remove("drag-over-top");
+            }
+        });
+
+        // drop file event
+        document.getElementById("files").addEventListener("drop", event => {
+            event.preventDefault();
+            const ul = event.target.closest("ul");
+            if (ul) {
+                const target = event.target.closest("li");
+                target.classList.remove("drag-over-bottom");
+                target.classList.remove("drag-over-top");
+                const rect = target.getBoundingClientRect();
+                const offset = event.clientY - rect.top; 
+                const position = offset < rect.height / 2 ? "before" : "after";
+                const fromFileId = event.dataTransfer.getData("text/plain");
+                const fromFile = Helpers.FindFileById(fromFileId);
+                const targetFile = Helpers.FindFileById(target.dataset.id);
+                console.log("move", fromFile.name, " to ", position, targetFile.name);
+            }
+        });
+
     }
 
     render() {
+
+        // backup which ids are currently expanded so we can set it during re-render
+        const expandedIds = Array.from(document.querySelectorAll("#files li label input[type=checkbox]:checked")).reduce((ids, input) => {
+            ids[input.closest("li").dataset.id] = true;
+            return ids;
+        }, {});
+
+        // get available icons to check for supported extentions
+        const availableIcons = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
 
         const generateHTML = (files, level) => {
             
@@ -56,18 +129,24 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
             for (const file of files) {
 
+                const ext = file.name.split(".").at(-1).toLowerCase();
+
                 elements.push(`
-                    <li>
+                    <li draggable="true" data-id="${file.id}">
                         <label>
                             <div class="flex-columns">
-                                <div>
+                                <div class="flex-columns">
                                     ${"<div class=\"ident\"></div>".repeat(level)}
                                 </div>
                                 <div class="flex">
-                                    <input type="checkbox">
+                                    <input type="checkbox" ${expandedIds[file.id] ? "checked" : ""}>
                                     <div class="caret"></div>
                                 </div>
                                 <div>
+                                    <img 
+                                        src="res/icons/extentions/${availableIcons.includes(ext) ? ext : "file"}.svg" 
+                                        alt="${file.name.split(".").at(-1)}" 
+                                    >
                                     <span>${file.name}</span>
                                 </div>
                             </div>
