@@ -6,6 +6,11 @@ file-explorer {
     height: 100%;
     background-color: #0F0F0F;
 
+    /* ensure content doesn't overflow */
+    & > div {
+        width: 100%;
+    }
+
     /* default item height for files */
     --item-height: 27px;
 
@@ -34,8 +39,7 @@ file-explorer {
         /* make it scrollable */
         flex: 1; 
         scrollbar-gutter: stable;
-        overflow-y: auto;
-        overflow-x: auto;
+        overflow: auto; /* try to get "overlay" to work without having to downgrade chromium */      
         margin: 0;
         padding: 0;
 

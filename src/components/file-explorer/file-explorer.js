@@ -56,6 +56,21 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
         };
 
+        // filter file event
+        document.getElementById("filter-file-input").oninput = event => {
+            const filter = event.target.value.toLowerCase();
+            document.querySelectorAll("#files li").forEach(li => {
+                if (li.dataset.container === "false") {
+                    const fileName = li.querySelector("span").textContent.toLowerCase();
+                    if (fileName.includes(filter)) {
+                        li.style.display = "";
+                    } else {
+                        li.style.display = "none";
+                    }
+                }
+            });
+        };
+
         // drag file event
         document.getElementById("files").addEventListener("dragstart", event => {
             if (event.target.tagName.toLowerCase() === "li") {
@@ -104,9 +119,12 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 const offset = event.clientY - rect.top; 
                 const position = offset < rect.height / 2 ? "before" : "after";
                 const fromFileId = event.dataTransfer.getData("text/plain");
-                const fromFile = Helpers.FindFileById(fromFileId);
-                const targetFile = Helpers.FindFileById(target.dataset.id);
-                console.log("move", fromFile.name, " to ", position, targetFile.name);
+                const toFileId = target.dataset.id;
+                // const fromFile = Helpers.FindFileById(fromFileId);
+                // const targetFile = Helpers.FindFileById(target.dataset.id);
+                // console.log("move", fromFile.name, " to ", position, targetFile.name);
+                Helpers.MoveFileById(fromFileId, position, toFileId);
+                this.render();
             }
         });
 
@@ -123,6 +141,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
         // get available icons to check for supported extentions
         const availableIcons = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
 
+        // recursively generate the <li> and <ul> elements for each file
         const generateHTML = (files, level) => {
             
             const elements = [];
@@ -135,7 +154,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 ext = ext === "con" ? "con_" : ext; 
 
                 elements.push(`
-                    <li draggable="true" data-id="${file.id}">
+                    <li draggable="true" data-id="${file.id}" data-container="${file.files && file.files.length > 0 ? "true" : "false"}">
                         <label>
                             <div class="flex-columns">
                                 <div class="flex-columns">
@@ -167,7 +186,11 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
         };
 
+        // replace the content of the list with the newly generated html
         document.getElementById("files").innerHTML = generateHTML(Globals.Files, 0);
+
+        // dispatch input event on the filter field to keep the filter active
+        document.getElementById("filter-file-input").dispatchEvent(new Event('input', { bubbles: true }));
 
     }
 
