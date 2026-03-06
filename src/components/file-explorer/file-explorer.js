@@ -145,10 +145,10 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                                     <input type="checkbox" ${expandedIds[file.id] ? "checked" : ""}>
                                     <div class="caret"></div>
                                 </div>
-                                <div>
+                                <div class="flex-columns flex-gap-small">
                                     <img 
                                         src="res/icons/extentions/${availableIcons.includes(ext) ? ext : "file"}.svg" 
-                                        alt="${file.name.split(".").at(-1)}" 
+                                        alt="${file.name.split(".").at(-1)}"
                                     >
                                     <span>${file.name}</span>
                                 </div>

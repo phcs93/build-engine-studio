@@ -93,7 +93,7 @@ file-explorer {
             width: calc(var(--item-height) / 2 );
             height: calc(var(--item-height) / 2 );
             margin-left: 4px;
-            margin-right: 4px;
+            margin-right: 8px;
             background-size: contain;
             background-repeat: no-repeat;
             justify-self: center;
@@ -107,14 +107,14 @@ file-explorer {
 
         /* open/closed caret icon */
         li label input[type="checkbox"]:checked + div.caret {
-            background-image: url("../../../res/icons/arrow-right.svg");
-        }
-        li label input[type="checkbox"]:not(:checked) + div.caret {
             background-image: url("../../../res/icons/arrow-down.svg");
         }
+        li label input[type="checkbox"]:not(:checked) + div.caret {
+            background-image: url("../../../res/icons/arrow-right.svg");
+        }
 
-        /* inversed condition so the listing starts open */
-        li:has(input[type="checkbox"]:checked) + ul {
+        /* hide file for folded items */
+        li:has(input[type="checkbox"]:not(:checked)) + ul {
             display: none;
         }
 
@@ -122,7 +122,8 @@ file-explorer {
         li label img {
             width: calc(var(--item-height) / 2 );
             height: calc(var(--item-height) / 2 );
-            margin-right: 4px;
+            align-self: center;
+            justify-self: center;
         }
 
     }
