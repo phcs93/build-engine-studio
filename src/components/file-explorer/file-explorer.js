@@ -129,7 +129,10 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
             for (const file of files) {
 
-                const ext = file.name.split(".").at(-1).toLowerCase();
+                let ext = file.name.split(".").at(-1).toLowerCase();
+
+                // con is a reserved word in windows so we have to use con_ instead
+                ext = ext === "con" ? "con_" : ext; 
 
                 elements.push(`
                     <li draggable="true" data-id="${file.id}">
