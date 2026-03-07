@@ -42,13 +42,16 @@ Helpers = {
                     this.DeleteFileById(fromFileId);
                     switch (position) {
                         case "before": {
-                            console.log("move", fromFile.name, " to ", position, file.name);
                             files.splice(i, 0, fromFile);
                             break;
                         }
                         case "after": {
-                            console.log("move", fromFile.name, " to ", position, file.name);
-                            files.splice(i + 1, 0, fromFile);
+                            // special case for when moving a file to inside a container
+                            if (file.files) {
+                                file.files.splice(0, 0, fromFile);
+                            } else {
+                                files.splice(i + 1, 0, fromFile);
+                            }
                             break;
                         }
                     }
