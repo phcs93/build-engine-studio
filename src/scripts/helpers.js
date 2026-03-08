@@ -63,6 +63,10 @@ Helpers = {
             }
         };
         recursiveMoveFile(Globals.Files);
+    },
+
+    IsFileStorageType(extension) {        
+        return Object.values(Build.Enums.StorageType).includes(extension);
     }
 
 }

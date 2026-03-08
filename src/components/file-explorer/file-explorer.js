@@ -25,14 +25,20 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
                         const entry = {
                             id: crypto.randomUUID(),
-                            name: fileName,
-                            bytes: bytes
+                            name: fileName                            
                         };
 
                         // check if file is a storage type so we can list its files
-                        if (["GRP", "RFF", "PK3", "SSI"].some(ext => ext === extension)) {
-                            const storage = Build.Models.Storage.Unserialize(bytes);                                
-                            entry.files = storage.Files.map(f => recursiveIterateFiles(f.name, f.bytes));
+                        if (Helpers.IsFileStorageType(extension)) {
+                            // here we store the instance of the storage object
+                            entry.instance = Build.Models.Storage.Unserialize(bytes);
+                            // we create entries for each file and store their bytes
+                            entry.files = entry.instance.Files.map(f => recursiveIterateFiles(f.name, f.bytes));
+                            // here we erase the individual file bytes from the storage instance so we don't waste memory
+                            entry.instance.Files = [];
+                        } else {
+                            // if the file is not a storage type we just store its bytes
+                            entry.bytes = bytes;
                         }
 
                         return entry;
@@ -120,12 +126,93 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 const position = offset < rect.height / 2 ? "before" : "after";
                 const fromFileId = event.dataTransfer.getData("text/plain");
                 const toFileId = target.dataset.id;
-                // const fromFile = Helpers.FindFileById(fromFileId);
-                // const targetFile = Helpers.FindFileById(target.dataset.id);
-                // console.log("move", fromFile.name, " to ", position, targetFile.name);
                 Helpers.MoveFileById(fromFileId, position, toFileId);
                 this.render();
             }
+        });
+
+        // right click file event (context menu)
+        document.getElementById("files").addEventListener("contextmenu", event => {
+
+            event.preventDefault();
+
+            if (event.target.tagName.toLowerCase() === "li" || event.target.closest("li")) {            
+
+                const li = event.target.tagName.toLowerCase() === "li" ? event.target : event.target.closest("li");
+                
+                const fileId = li.dataset.id;
+                
+                const template = [
+                    {
+                        label: "Export",
+                        click: () => {
+
+                            const recursiveIterateFiles = (file) => {
+
+                                const extension = file.name.split(".").at(-1).toUpperCase();
+
+                                // check if file is a storage type because we have to get the bytes of the individual file entries and put them back into the instance
+                                if (Helpers.IsFileStorageType(extension)) {
+                                    file.instance.Files = file.files.map(f => {
+                                        const bytes = recursiveIterateFiles(f);
+                                        return { name: f.name, bytes: bytes };
+                                    });
+                                    console.log("file.instance =>", file.instance);
+                                    return Build.Models.Storage.Serialize(file.instance);
+                                } else {
+                                    return file.bytes;
+                                }
+
+                            };
+
+                            // here we find the file by id and get the bytes recursively for storage files
+                            const file = Helpers.FindFileById(fileId);
+                            const bytes = recursiveIterateFiles(file);
+
+                            // perform download
+                            const blob = new Blob([bytes], { type: "application/octet-stream" });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = file.name;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+
+                            // if its a storage file we have to clear the files from the instance again after exporting so we don't waste memory
+                            if (file.instance) {
+                                file.instance.Files = [];
+                            }
+
+                        }
+
+                    }
+                    // { label: 'Cut', role: 'cut' }, // Built-in roles for common actions
+                    // { label: 'Copy', role: 'copy' },
+                    // { label: 'Paste', role: 'paste' },
+                    // { type: 'separator' },
+                    // {
+                    //     label: 'Inspect Element',
+                    //     click: () => {
+                    //         electron.getCurrentWindow().webContents.inspectElement(event.clientX, event.clientY);
+                    //     }
+                    // }
+                ];
+                    
+                // You can dynamically adjust the menu based on the params object
+                // (e.g., enable 'Copy' only if text is selected, check params.selectionText)
+
+                const menu = electron.Menu.buildFromTemplate(template);
+                
+                menu.popup({ 
+                    window: electron.getCurrentWindow(), 
+                    x: event.clientX, 
+                    y: event.clientY
+                });
+
+            }
+
         });
 
     }
