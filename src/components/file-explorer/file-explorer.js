@@ -147,27 +147,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                         label: "Export",
                         click: () => {
 
-                            const recursiveIterateFiles = (file) => {
-
-                                const extension = file.name.split(".").at(-1).toUpperCase();
-
-                                // check if file is a storage type because we have to get the bytes of the individual file entries and put them back into the instance
-                                if (Helpers.IsFileStorageType(extension)) {
-                                    file.instance.Files = file.files.map(f => {
-                                        const bytes = recursiveIterateFiles(f);
-                                        return { name: f.name, bytes: bytes };
-                                    });
-                                    console.log("file.instance =>", file.instance);
-                                    return Build.Models.Storage.Serialize(file.instance);
-                                } else {
-                                    return file.bytes;
-                                }
-
-                            };
-
-                            // here we find the file by id and get the bytes recursively for storage files
-                            const file = Helpers.FindFileById(fileId);
-                            const bytes = recursiveIterateFiles(file);
+                            const bytes = Helpers.GetFileBytesById(fileId);
 
                             // perform download
                             const blob = new Blob([bytes], { type: "application/octet-stream" });

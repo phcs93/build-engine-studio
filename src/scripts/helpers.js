@@ -38,7 +38,7 @@ Helpers = {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.id === toFileId) {
-                    const fromFile = JSON.parse(JSON.stringify(Helpers.FindFileById(fromFileId)));
+                    const fromFile = structuredClone(Helpers.FindFileById(fromFileId));
                     this.DeleteFileById(fromFileId);
                     switch (position) {
                         case "before": {
@@ -67,6 +67,34 @@ Helpers = {
 
     IsFileStorageType(extension) {        
         return Object.values(Build.Enums.StorageType).includes(extension);
+    },
+
+    GetFileBytesById(id) {
+
+        const recursiveIterateFiles = (file) => {
+
+            const extension = file.name.split(".").at(-1).toUpperCase();
+
+            // check if file is a storage type because we have to get the bytes of the individual file entries and put them back into the instance
+            if (Helpers.IsFileStorageType(extension)) {
+                file.instance.Files = file.files.map(f => {
+                    const bytes = recursiveIterateFiles(f);
+                    return { name: f.name, bytes: bytes };
+                });
+                const serialized = Build.Models.Storage.Serialize(file.instance);
+                file.instance.Files = []; // clear to save memory
+                return serialized;
+            } else {
+                return file.bytes;
+            }
+
+        };
+
+        const file = Helpers.FindFileById(id);
+        const bytes = recursiveIterateFiles(file);
+
+        return bytes;
+
     }
 
 }
