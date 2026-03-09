@@ -160,10 +160,6 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                             document.body.removeChild(a);
                             URL.revokeObjectURL(url);
 
-                            // if its a storage file we have to clear the files from the instance again after exporting so we don't waste memory
-                            if (file.instance) {
-                                file.instance.Files = [];
-                            }
 
                         }
 
