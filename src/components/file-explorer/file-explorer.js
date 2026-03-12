@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const fs = require("fs");
 
 customElements.define("file-explorer", class FileExplorer extends HTMLElement {
@@ -14,45 +13,12 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
         document.getElementById("open-file-button").onchange = async event => {
 
             await Promise.all(Array.from(event.target.files).map(uploadedFile => new Promise(resolve => {
-
                 const reader = new FileReader();
-
-                reader.onload = () => {
-
-                    const recursiveIterateFiles = (fileName, bytes) => {
-
-                        const extension = fileName.split(".").at(-1).toUpperCase();
-
-                        const entry = {
-                            id: crypto.randomUUID(),
-                            name: fileName                            
-                        };
-
-                        // check if file is a storage type so we can list its files
-                        if (Helpers.IsFileStorageType(extension)) {
-                            // here we store the instance of the storage object
-                            entry.instance = Build.Models.Storage.Unserialize(bytes);
-                            // we create entries for each file and store their bytes
-                            entry.files = entry.instance.Files.map(f => recursiveIterateFiles(f.name, f.bytes));
-                            // here we erase the individual file bytes from the storage instance so we don't waste memory
-                            entry.instance.Files = [];
-                        } else {
-                            // if the file is not a storage type we just store its bytes
-                            entry.bytes = bytes;
-                        }
-
-                        return entry;
-
-                    };
-                    
-                    Globals.Files.push(recursiveIterateFiles(uploadedFile.name, new Uint8Array(reader.result)));
-
+                reader.onload = () => {                    
+                    Globals.Files.push(new FileEntry(uploadedFile.name, new Uint8Array(reader.result)));
                     resolve();
-
                 };
-
                 reader.readAsArrayBuffer(uploadedFile);
-
             })));
 
             // reset value so that the same file can be selected again if needed
@@ -66,7 +32,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
         document.getElementById("filter-file-input").oninput = event => {
             const filter = event.target.value.toLowerCase();
             document.querySelectorAll("#files li").forEach(li => {
-                if (li.dataset.container === "false") {
+                if (li.dataset.storage === "false") {
                     const fileName = li.querySelector("span").textContent.toLowerCase();
                     if (fileName.includes(filter)) {
                         li.style.display = "";
@@ -77,6 +43,32 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
             });
         };
 
+        // disable drag over event on file filter input
+        document.getElementById("filter-file-input").addEventListener("dragover", event => {
+            event.preventDefault();
+        });
+
+        // disable drag leave event on file filter input
+        document.getElementById("filter-file-input").addEventListener("dragleave", event => {
+            event.preventDefault();
+        });
+
+        // disable drop event on file filter input
+        document.getElementById("filter-file-input").addEventListener("drop", event => {
+            event.preventDefault();
+        });
+
+        // expand file event
+        document.getElementById("files").addEventListener("click", event => {
+            const li = event.target.closest("li");
+            if (li && li.dataset.storage) {
+                const isExpanded = li.dataset.expanded === "true";
+                li.dataset.expanded = !isExpanded;
+                // here we update the global state of the file to keep it consistent with the DOM
+                Helpers.FindFileById(li.dataset.id).expanded = !isExpanded;
+            }
+        });
+
         // drag file event
         document.getElementById("files").addEventListener("dragstart", event => {
             if (event.target.tagName.toLowerCase() === "li") {
@@ -86,9 +78,8 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
         // drag file over event
         document.getElementById("files").addEventListener("dragover", event => {
-            event.preventDefault();
-            const ul = event.target.closest("ul");
-            if (ul) {                
+            if (event.target.closest("ul")) {
+                event.preventDefault();
                 const target = event.target.closest("li");
                 const rect = target.getBoundingClientRect();
                 const offset = event.clientY - rect.top;
@@ -104,9 +95,8 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
         // drag file leave event
         document.getElementById("files").addEventListener("dragleave", event => {
-            event.preventDefault();
-            const ul = event.target.closest("ul");
-            if (ul) {                
+            if (event.target.closest("ul")) {
+                event.preventDefault();
                 const target = event.target.closest("li");
                 target.classList.remove("drag-over-bottom");
                 target.classList.remove("drag-over-top");
@@ -114,10 +104,9 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
         });
 
         // drop file event
-        document.getElementById("files").addEventListener("drop", event => {
-            event.preventDefault();
-            const ul = event.target.closest("ul");
-            if (ul) {
+        document.getElementById("files").addEventListener("drop", event => {            
+            if (event.target.closest("ul")) {
+                event.preventDefault();
                 const target = event.target.closest("li");
                 target.classList.remove("drag-over-bottom");
                 target.classList.remove("drag-over-top");
@@ -144,13 +133,10 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 
                 const template = [
                     {
-                        label: "Export",
+                        label: "Export File",
                         click: () => {
-
-                            const bytes = Helpers.GetFileBytesById(fileId);
-
-                            // perform download
-                            const blob = new Blob([bytes], { type: "application/octet-stream" });
+                            const file = Helpers.FindFileById(fileId);
+                            const blob = new Blob([file.Serialize()], { type: "application/octet-stream" });
                             const url = URL.createObjectURL(blob);
                             const a = document.createElement("a");
                             a.href = url;
@@ -159,25 +145,16 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                             a.click();
                             document.body.removeChild(a);
                             URL.revokeObjectURL(url);
-
-
                         }
-
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Inspect Element',
+                        click: () => {
+                            electron.getCurrentWindow().webContents.inspectElement(event.clientX, event.clientY);
+                        }
                     }
-                    // { label: 'Cut', role: 'cut' }, // Built-in roles for common actions
-                    // { label: 'Copy', role: 'copy' },
-                    // { label: 'Paste', role: 'paste' },
-                    // { type: 'separator' },
-                    // {
-                    //     label: 'Inspect Element',
-                    //     click: () => {
-                    //         electron.getCurrentWindow().webContents.inspectElement(event.clientX, event.clientY);
-                    //     }
-                    // }
                 ];
-                    
-                // You can dynamically adjust the menu based on the params object
-                // (e.g., enable 'Copy' only if text is selected, check params.selectionText)
 
                 const menu = electron.Menu.buildFromTemplate(template);
                 
@@ -195,14 +172,22 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     render() {
 
-        // backup which ids are currently expanded so we can set it during re-render
-        const expandedIds = Array.from(document.querySelectorAll("#files li label input[type=checkbox]:checked")).reduce((ids, input) => {
-            ids[input.closest("li").dataset.id] = true;
-            return ids;
-        }, {});
+        // helper function to handle extension icon file name
+        const getIconFileName = extension => {
 
-        // get available icons to check for supported extentions
-        const availableIcons = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
+            const iconFiles = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
+
+            if (iconFiles.includes(extension)) {
+                if (extension === "con") {
+                    return "con_";
+                } else {
+                    return extension;
+                }
+            } else {
+                return "file";
+            }  
+            
+        };
 
         // recursively generate the <li> and <ul> elements for each file
         const generateHTML = (files, level) => {
@@ -211,35 +196,25 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
             for (const file of files) {
 
-                let ext = file.name.split(".").at(-1).toLowerCase();
-
-                // con is a reserved word in windows so we have to use con_ instead
-                ext = ext === "con" ? "con_" : ext; 
-
                 elements.push(`
-                    <li draggable="true" data-id="${file.id}" data-container="${file.files && file.files.length > 0 ? "true" : "false"}">
-                        <label>
-                            <div class="flex-columns">
-                                <div class="flex-columns">
-                                    ${"<div class=\"ident\"></div>".repeat(level)}
-                                </div>
-                                <div class="flex">
-                                    <input type="checkbox" ${expandedIds[file.id] ? "checked" : ""}>
-                                    <div class="caret"></div>
-                                </div>
-                                <div class="flex-columns flex-gap-small">
-                                    <img 
-                                        src="res/icons/extentions/${availableIcons.includes(ext) ? ext : "file"}.svg" 
-                                        alt="${file.name.split(".").at(-1)}"
-                                    >
-                                    <span>${file.name}</span>
-                                </div>
-                            </div>
-                        </label>
+                    <li draggable="true" 
+                        data-id="${file.id}" 
+                        data-storage="${file.isStorageType}"
+                        data-selected="${file.selected}"
+                        data-expanded="${file.expanded}"
+                        data-open="${file.open}"
+                        data-saved="${file.saved}"
+                        >
+                        <div class="flex-columns flex-gap-small">
+                            ${"<div class=\"ident\"></div>".repeat(level)}
+                            <div class="caret"></div>
+                            <img src="res/icons/extentions/${getIconFileName(file.extension)}.svg" alt="${file.extension}">                            
+                            <span>${file.name}</span>
+                        </div>
                     </li>
                 `);
 
-                if (file.files && file.files.length > 0) {
+                if (file.isStorageType) {
                     elements.push(generateHTML(file.files, level + 1));
                 }
 
@@ -253,7 +228,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
         document.getElementById("files").innerHTML = generateHTML(Globals.Files, 0);
 
         // dispatch input event on the filter field to keep the filter active
-        document.getElementById("filter-file-input").dispatchEvent(new Event('input', { bubbles: true }));
+        document.getElementById("filter-file-input").dispatchEvent(new Event("input", { bubbles: true }));
 
     }
 

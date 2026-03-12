@@ -35,20 +35,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // gets the system accent color
 function tryGetAccentColor () {
-    console.log("tryGetAccentColor()...");
+    //console.log("tryGetAccentColor()...");
     let color = "FFFFFF";
     try {
         color = electron.systemPreferences.getAccentColor();
     } catch (e) {
         console.error("tryGetAccentColor() //", e);
     }
-    console.log("tryGetAccentColor() =>", color);
+    //console.log("tryGetAccentColor() =>", color);
     return color;
 }
 
 // gets a contrasting color (black or white) for the given background color
 function getContrastColor (bgColor) {
-    console.log(`getContrastColor(${bgColor})...`);
+    //console.log(`getContrastColor(${bgColor})...`);
     const color = (bgColor.charAt(0) === "#") ? bgColor.substring(1, 7) : bgColor;
     const r = parseInt(color.substring(0, 2), 16); // hexToR
     const g = parseInt(color.substring(2, 4), 16); // hexToG
@@ -62,6 +62,6 @@ function getContrastColor (bgColor) {
     });
     const l = (0.2126 * c[0]) + (0.7152 * c[1]) + (0.0722 * c[2]);
     const result = l <= 0.179 ? "FFFFFF" : "000000";
-    console.log(`getContrastColor(${bgColor}) // ${result}`);
+    //console.log(`getContrastColor(${bgColor}) // ${result}`);
     return result;
 }

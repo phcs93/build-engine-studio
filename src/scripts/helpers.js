@@ -34,11 +34,22 @@ Helpers = {
     },
 
     MoveFileById(fromFileId, position, toFileId) {
+
+        const fromFile = Helpers.FindFileById(fromFileId);
+
+        // abort if file not found
+        if (!fromFile) return;
+
+        // block moving to inside itself
+        if (fromFileId === toFileId) return;
+
+        // block moving to inside a descendant
+        if (this.IsDescendant(fromFile, toFileId)) return;
+
         const recursiveMoveFile = (files) => {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if (file.id === toFileId) {
-                    const fromFile = structuredClone(Helpers.FindFileById(fromFileId));
+                if (file.id === toFileId) {                    
                     this.DeleteFileById(fromFileId);
                     switch (position) {
                         case "before": {
@@ -62,38 +73,25 @@ Helpers = {
                 }
             }
         };
+
         recursiveMoveFile(Globals.Files);
+
     },
 
-    IsFileStorageType(extension) {        
-        return Object.values(Build.Enums.StorageType).includes(extension);
-    },
+    IsDescendant(parent, targetId) {
 
-    GetFileBytesById(id) {
+        if (!parent.files) return false;
 
-        const recursiveIterateFiles = (file) => {
-
-            const extension = file.name.split(".").at(-1).toUpperCase();
-
-            // check if file is a storage type because we have to get the bytes of the individual file entries and put them back into the instance
-            if (Helpers.IsFileStorageType(extension)) {
-                file.instance.Files = file.files.map(f => {
-                    const bytes = recursiveIterateFiles(f);
-                    return { name: f.name, bytes: bytes };
-                });
-                const serialized = Build.Models.Storage.Serialize(file.instance);
-                file.instance.Files = []; // clear to save memory
-                return serialized;
-            } else {
-                return file.bytes;
+        for (const file of parent.files) {
+            if (file.id === targetId) {
+                return true;
             }
+            if (this.IsDescendant(file, targetId)) {
+                return true;
+            }
+        }
 
-        };
-
-        const file = Helpers.FindFileById(id);
-        const bytes = recursiveIterateFiles(file);
-
-        return bytes;
+        return false;
 
     }
 
