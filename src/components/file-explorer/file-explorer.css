@@ -80,8 +80,7 @@ file-explorer {
         /* markers to both ident the item and to draw a straight line on the left */
         li div.ident {
             height: var(--item-height);
-            margin-left: 10px;
-            margin-right: 7px;
+            margin-left: 14.2px;
             border-left: 1px solid #2B2B2B;
         }
 
@@ -89,7 +88,7 @@ file-explorer {
         li div.caret {
             width: calc(var(--item-height) / 2 );
             height: calc(var(--item-height) / 2 );
-            margin-left: 4px;
+            margin-left: 8px;
             background-size: contain;
             background-repeat: no-repeat;
             justify-self: center;
