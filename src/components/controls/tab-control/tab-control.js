@@ -68,20 +68,30 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
 
                 const fromTabHeader = document.querySelector(`#tabs-headers label.tab-header[data-id="${fromTabId}"]`);
                 const toTabHeader = document.querySelector(`#tabs-headers label.tab-header[data-id="${toTabId}"]`);
+                const tabHeadersContainer = document.querySelector("div#tabs-headers");
 
                 if (position === "before") {
-                    document.querySelector("div#tabs-headers").insertBefore(fromTabHeader, toTabHeader);
+                    tabHeadersContainer.insertBefore(fromTabHeader, toTabHeader);
                 } else {
-                    document.querySelector("div#tabs-headers").insertBefore(fromTabHeader, toTabHeader.nextSibling);
+                    if (toTabHeader.nextSibling) {
+                        tabHeadersContainer.insertBefore(fromTabHeader, toTabHeader.nextSibling);
+                    } else {
+                        tabHeadersContainer.appendChild(fromTabHeader);
+                    }
                 }
 
                 const fromTabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${fromTabId}"]`);
                 const toTabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${toTabId}"]`);
+                const tabContentsContainer = document.querySelector("div#tabs-contents");
 
                 if (position === "before") {
-                    document.querySelector("div#tabs-contents").insertBefore(fromTabContent, toTabContent);
+                    tabContentsContainer.insertBefore(fromTabContent, toTabContent);
                 } else {
-                    document.querySelector("div#tabs-contents").insertBefore(fromTabContent, toTabContent.nextSibling);
+                    if (toTabContent.nextSibling) {
+                        tabContentsContainer.insertBefore(fromTabContent, toTabContent.nextSibling);
+                    } else {
+                        tabContentsContainer.appendChild(fromTabContent);
+                    }
                 }
 
                 this.selectTab(fromTabId);
