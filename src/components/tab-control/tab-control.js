@@ -87,7 +87,7 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
                 this.Tabs.splice(fromIndex, 1);
                 const newIndex = position === "before" ? toIndex : toIndex + 1;
                 this.Tabs.splice(newIndex, 0, fromTab);
-                this.render();
+                this.selectTab(fromTabId);
             }
         });
 
