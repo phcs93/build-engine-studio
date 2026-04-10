@@ -2,7 +2,7 @@ nav-control {
 
     display: flex;
     flex-grow: 1;
-    height: 100vh;
+    height: 100vh;    
 
     & div#nav-control-buttons {
 

@@ -4,7 +4,7 @@ file-explorer {
     display: flex;
     width: 256px;
     height: 100%;
-    background-color: #0F0F0F;
+    background-color: #141414;
 
     /* ensure content doesn't overflow */
     & > div {

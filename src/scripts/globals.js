@@ -1,3 +1,5 @@
 Globals = {
-    Files: []
+    /** @type {FileEntry[]} */
+    Files: [],
+    Events: new EventTarget()
 }

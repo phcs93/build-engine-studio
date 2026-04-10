@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 Helpers = {
 
     FindFileById(id) {
@@ -58,7 +60,7 @@ Helpers = {
                         }
                         case "after": {
                             // special case for when moving a file to inside a container
-                            if (file.files) {
+                            if (file.isStorageType && file.expanded) {
                                 file.files.splice(0, 0, fromFile);
                             } else {
                                 files.splice(i + 1, 0, fromFile);
@@ -93,6 +95,22 @@ Helpers = {
 
         return false;
 
+    },
+
+    GetIconFileName(extension) {
+
+        const iconFiles = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
+
+        if (iconFiles.includes(extension)) {
+            if (extension === "con") {
+                return "con_";
+            } else {
+                return extension;
+            }
+        } else {
+            return "file";
+        }  
+        
     }
 
 }

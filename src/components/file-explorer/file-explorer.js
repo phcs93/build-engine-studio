@@ -1,5 +1,3 @@
-const fs = require("fs");
-
 customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     constructor() {
@@ -120,6 +118,15 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
             }
         });
 
+        // left click file event
+        document.getElementById("files").addEventListener("click", event => {
+            const li = event.target.closest("li");
+            if (!li || li.dataset.storage === "true") return;
+            const fileId = li.dataset.id;
+            // dispatch event so that other components can listen to it and react accordingly (e.g. open file in tab control)
+            Globals.Events.dispatchEvent(new CustomEvent("file-clicked", { detail: { fileId } }));
+        });
+
         // right click file event (context menu)
         document.getElementById("files").addEventListener("contextmenu", event => {
 
@@ -172,23 +179,6 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     render() {
 
-        // helper function to handle extension icon file name
-        const getIconFileName = extension => {
-
-            const iconFiles = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
-
-            if (iconFiles.includes(extension)) {
-                if (extension === "con") {
-                    return "con_";
-                } else {
-                    return extension;
-                }
-            } else {
-                return "file";
-            }  
-            
-        };
-
         // recursively generate the <li> and <ul> elements for each file
         const generateHTML = (files, level) => {
             
@@ -204,11 +194,12 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                         data-expanded="${file.expanded}"
                         data-open="${file.open}"
                         data-saved="${file.saved}"
+                        data-extension="${file.extension}"
                         >
                         <div class="flex-columns flex-gap-small">
                             ${"<div class=\"ident\"></div>".repeat(level)}
                             <div class="caret"></div>
-                            <img src="res/icons/extentions/${getIconFileName(file.extension)}.svg" alt="${file.extension}">                            
+                            <img src="res/icons/extentions/${Helpers.GetIconFileName(file.extension)}.svg" alt="${file.extension}">                            
                             <span>${file.name}</span>
                         </div>
                     </li>
