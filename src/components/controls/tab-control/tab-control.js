@@ -1,0 +1,168 @@
+customElements.define("tab-control", class TabControl extends HTMLElement {
+
+    constructor() {
+        super();
+        this.appendChild(document.getElementById("tab-control").content.cloneNode(true));
+    }
+
+    connectedCallback() {
+
+        // click close tab event
+        document.getElementById("tabs-headers").addEventListener("click", event => {
+            const closeButton = event.target.closest("div.close-tab-button");
+            if (!closeButton) return;
+            const tabId = closeButton.dataset.id;
+            this.closeTab(tabId);
+        });
+        
+        // drag tab event
+        document.getElementById("tabs-headers").addEventListener("dragstart", event => {
+            if (event.target.tagName.toLowerCase() === "label") {
+                event.dataTransfer.setData("text/plain", event.target.dataset.id);
+            }
+        });
+
+        // drag tab over event
+        document.getElementById("tabs-headers").addEventListener("dragover", event => {
+            if (event.target.closest("label.tab-header")) {
+                event.preventDefault();
+                const target = event.target.closest("label.tab-header");
+                const rect = target.getBoundingClientRect();
+                const offset = event.clientX - rect.left;
+                if (offset < rect.width / 2) {
+                    target.classList.add("drag-over-left");
+                    target.classList.remove("drag-over-right");
+                } else {
+                    target.classList.add("drag-over-right");
+                    target.classList.remove("drag-over-left");
+                }
+            }
+        });
+
+        // drag tab leave event
+        document.getElementById("tabs-headers").addEventListener("dragleave", event => {
+            if (event.target.closest("label.tab-header")) {
+                event.preventDefault();
+                const target = event.target.closest("label.tab-header");
+                target.classList.remove("drag-over-right");
+                target.classList.remove("drag-over-left");
+            }
+        });
+
+        // drop tab event
+        document.getElementById("tabs-headers").addEventListener("drop", event => {            
+            if (event.target.closest("label.tab-header")) {
+                event.preventDefault();
+                const target = event.target.closest("label.tab-header");
+                target.classList.remove("drag-over-left");
+                target.classList.remove("drag-over-right");
+                const fromTabId = event.dataTransfer.getData("text/plain");
+                const toTabId = target.dataset.id;
+                if (fromTabId === -1 || toTabId === -1 || fromTabId === toTabId) return;
+
+                const rect = target.getBoundingClientRect();
+                const offset = event.clientX - rect.left; 
+                const position = offset < rect.width / 2 ? "before" : "after";
+
+                const fromTabHeader = document.querySelector(`#tabs-headers label.tab-header[data-id="${fromTabId}"]`);
+                const toTabHeader = document.querySelector(`#tabs-headers label.tab-header[data-id="${toTabId}"]`);
+
+                if (position === "before") {
+                    target.parentNode.insertBefore(fromTabHeader, toTabHeader);
+                } else {
+                    target.parentNode.insertBefore(fromTabHeader, toTabHeader.nextSibling);
+                }
+
+                const fromTabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${fromTabId}"]`);
+                const toTabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${toTabId}"]`);
+
+                if (position === "before") {
+                    target.parentNode.insertBefore(fromTabContent, toTabContent);
+                } else {
+                    target.parentNode.insertBefore(fromTabContent, toTabContent.nextSibling);
+                }
+
+                this.selectTab(fromTabId);
+
+            }
+        });
+
+        // listen for file clicks to open them in a new tab
+        Globals.Events.addEventListener("file-clicked", event => {
+            // get number of open tabs
+            if (document.querySelectorAll("#tabs-headers label.tab-header").length === 64) {
+                alert("Dude chill out, you have too many tabs open!");
+                return;
+            }
+            const fileId = event.detail.fileId;
+            const existingTab = document.querySelector(`#tabs-headers label.tab-header[data-id="${fileId}"]`);
+            if (existingTab) {
+                this.selectTab(fileId);
+            } else {
+                const file = Helpers.FindFileById(fileId);
+                this.render(fileId, file.extension, file.name, true);
+                this.selectTab(fileId);
+            }
+        });
+
+    }
+
+    render(id, icon, title, selected) {
+
+        // create tab header
+        document.getElementById("tabs-headers").insertAdjacentHTML("beforeend", `
+            <label class="tab-header" data-id="${id}" draggable="true">
+                <div class="flex-columns flex-gap-small padding-medium">
+                    <input type="radio" name="tab-control" ${selected ? "checked" : ""} />
+                    <img src="res/icons/extentions/${Helpers.GetIconFileName(icon)}.svg" alt="${icon}">
+                    <div class="title">${title}</div>
+                    <div class="close-tab-button" data-id="${id}">
+                        <img src="res/icons/close.svg" alt="Close">
+                    </div>
+                </div>
+            </label>
+        `);
+
+        // create tab content
+        document.getElementById("tabs-contents").insertAdjacentHTML("beforeend", `
+            <div class="tab-content" data-id="${id}">
+                ${title}
+            </div>
+        `);
+
+    }
+
+    selectTab(id) {
+
+        document.querySelector(`#tabs-headers label.tab-header[data-id="${id}"] input[type="radio"]`).checked = true;
+
+        // scroll to selected tab
+        const selectedTab = document.querySelector(`#tabs-headers label.tab-header[data-id="${id}"]`);
+        if (selectedTab) {
+            selectedTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        }
+
+    }
+
+    closeTab(id) {
+
+        const tabHeader = document.querySelector(`#tabs-headers label.tab-header[data-id="${id}"]`);
+        const tabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${id}"]`);
+
+        // if the closed tab was selected, select the previous adjacent tab (if exists)
+        if (tabHeader && tabHeader.querySelector("input[type='radio']").checked) {
+            const previousTabHeader = tabHeader.previousElementSibling;
+            const nextTabHeader = tabHeader.nextElementSibling;
+            if (previousTabHeader) {
+                this.selectTab(previousTabHeader.dataset.id);
+            } else if (nextTabHeader) {
+                this.selectTab(nextTabHeader.dataset.id);
+            }
+        }
+
+        if (tabHeader) tabHeader.remove();
+        if (tabContent) tabContent.remove();
+
+    }
+
+});

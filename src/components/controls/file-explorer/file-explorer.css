@@ -26,7 +26,7 @@ file-explorer {
             transform: translateY(-50%);        
             width: 16px;
             height: 16px;
-            background-image: url("../../../res/icons/search.svg");
+            background-image: url("../../../../res/icons/search.svg");
             background-repeat: no-repeat;
             background-size: 16px 16px;
             pointer-events: none;
@@ -102,12 +102,12 @@ file-explorer {
 
         /* open caret icon */
         li[data-expanded="true"] div.caret {
-            background-image: url("../../../res/icons/arrow-down.svg");
+            background-image: url("../../../../res/icons/arrow-down.svg");
         }
 
         /* closed caret icon */
         li[data-expanded="false"] div.caret {
-            background-image: url("../../../res/icons/arrow-right.svg");
+            background-image: url("../../../../res/icons/arrow-right.svg");
         }
 
         /* file icon */

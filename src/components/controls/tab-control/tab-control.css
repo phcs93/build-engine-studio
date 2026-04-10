@@ -1,0 +1,164 @@
+tab-control {
+
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    background-color: #080808;
+
+    & > div {
+        width: calc(100vw - 256px - 64px); /* ugh */
+    }
+
+    div#tabs-headers {
+
+        overflow-x: auto;
+
+        label.tab-header {
+
+            font-family: 'Segoe UI';
+            font-weight: normal;
+            user-select: none;
+            cursor: pointer;
+
+            & > div {
+                box-sizing: border-box;
+                border-bottom: 1px solid #2B2B2B;
+                border-right: 1px solid #2B2B2B;
+            }
+
+            & input[type="radio"] {
+                display: none;
+            }
+
+            & img {
+                width: 17px;
+                height: 17px;
+            }
+
+            & div.title {
+                height: 17px;
+                line-height: 17px;
+            }
+
+            & div.close-tab-button {
+                height: 17px;
+                width: 17px;
+                img {
+                    padding-top: 4px;
+                    height: 10px;
+                    visibility: hidden;
+                }
+                &:hover {
+                    background-color: #2B2B2B;
+                    border-radius: 5px;
+                }
+            }
+
+            &:hover {
+                & > div {
+                    background-color: #0E0E0E;
+                    & > div.close-tab-button > img {
+                        visibility: visible;
+                    }
+                }
+            }
+
+            &:has(input[type="radio"]:checked) {
+                & > div {
+                    background-color: #0E0E0E; 
+                    border-top: 2px solid var(--accent-color);
+                    padding-top: 14px;
+                    border-bottom: none;
+                    & > div.close-tab-button > img {
+                        visibility: visible;
+                    }
+                }
+            }
+
+            /* add line on left to indicate where file will be dropped */
+            &.drag-over-left > div {
+                box-shadow: inset 1px 0 0 var(--accent-color);
+            }
+
+            /* add line on right to indicate where file will be dropped */
+            &.drag-over-right > div {
+                box-shadow: inset -1px 0 0 var(--accent-color);
+            }
+
+        }
+
+    }
+
+    & div#tabs-contents > * {
+        display: none;
+    }
+
+    div:has(div#tabs-headers label:nth-of-type(01) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(01),
+    div:has(div#tabs-headers label:nth-of-type(02) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(02),
+    div:has(div#tabs-headers label:nth-of-type(03) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(03),
+    div:has(div#tabs-headers label:nth-of-type(04) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(04),
+    div:has(div#tabs-headers label:nth-of-type(05) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(05),
+    div:has(div#tabs-headers label:nth-of-type(06) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(06),
+    div:has(div#tabs-headers label:nth-of-type(07) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(07),
+    div:has(div#tabs-headers label:nth-of-type(08) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(08),
+    div:has(div#tabs-headers label:nth-of-type(09) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(09),
+    div:has(div#tabs-headers label:nth-of-type(10) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(10),
+    div:has(div#tabs-headers label:nth-of-type(11) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(11),
+    div:has(div#tabs-headers label:nth-of-type(12) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(12),
+    div:has(div#tabs-headers label:nth-of-type(13) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(13),
+    div:has(div#tabs-headers label:nth-of-type(14) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(14),
+    div:has(div#tabs-headers label:nth-of-type(15) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(15),
+    div:has(div#tabs-headers label:nth-of-type(16) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(16),
+    div:has(div#tabs-headers label:nth-of-type(17) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(17),
+    div:has(div#tabs-headers label:nth-of-type(18) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(18),
+    div:has(div#tabs-headers label:nth-of-type(19) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(19),
+    div:has(div#tabs-headers label:nth-of-type(20) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(20),
+    div:has(div#tabs-headers label:nth-of-type(21) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(21),
+    div:has(div#tabs-headers label:nth-of-type(22) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(22),
+    div:has(div#tabs-headers label:nth-of-type(23) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(23),
+    div:has(div#tabs-headers label:nth-of-type(24) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(24),
+    div:has(div#tabs-headers label:nth-of-type(25) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(25),
+    div:has(div#tabs-headers label:nth-of-type(26) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(26),
+    div:has(div#tabs-headers label:nth-of-type(27) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(27),
+    div:has(div#tabs-headers label:nth-of-type(28) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(28),
+    div:has(div#tabs-headers label:nth-of-type(29) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(29),
+    div:has(div#tabs-headers label:nth-of-type(30) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(30),
+    div:has(div#tabs-headers label:nth-of-type(31) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(31),
+    div:has(div#tabs-headers label:nth-of-type(32) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(32),
+    div:has(div#tabs-headers label:nth-of-type(33) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(33),
+    div:has(div#tabs-headers label:nth-of-type(34) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(34),
+    div:has(div#tabs-headers label:nth-of-type(35) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(35),
+    div:has(div#tabs-headers label:nth-of-type(36) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(36),
+    div:has(div#tabs-headers label:nth-of-type(37) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(37),
+    div:has(div#tabs-headers label:nth-of-type(38) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(38),
+    div:has(div#tabs-headers label:nth-of-type(39) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(39),
+    div:has(div#tabs-headers label:nth-of-type(40) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(40),
+    div:has(div#tabs-headers label:nth-of-type(41) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(41),
+    div:has(div#tabs-headers label:nth-of-type(42) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(42),
+    div:has(div#tabs-headers label:nth-of-type(43) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(43),
+    div:has(div#tabs-headers label:nth-of-type(44) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(44),
+    div:has(div#tabs-headers label:nth-of-type(45) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(45),
+    div:has(div#tabs-headers label:nth-of-type(46) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(46),
+    div:has(div#tabs-headers label:nth-of-type(47) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(47),
+    div:has(div#tabs-headers label:nth-of-type(48) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(48),
+    div:has(div#tabs-headers label:nth-of-type(49) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(49),
+    div:has(div#tabs-headers label:nth-of-type(50) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(50),
+    div:has(div#tabs-headers label:nth-of-type(51) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(51),
+    div:has(div#tabs-headers label:nth-of-type(52) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(52),
+    div:has(div#tabs-headers label:nth-of-type(53) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(53),
+    div:has(div#tabs-headers label:nth-of-type(54) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(54),
+    div:has(div#tabs-headers label:nth-of-type(55) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(55),
+    div:has(div#tabs-headers label:nth-of-type(56) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(56),
+    div:has(div#tabs-headers label:nth-of-type(57) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(57),
+    div:has(div#tabs-headers label:nth-of-type(58) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(58),
+    div:has(div#tabs-headers label:nth-of-type(59) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(59),
+    div:has(div#tabs-headers label:nth-of-type(60) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(60),
+    div:has(div#tabs-headers label:nth-of-type(61) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(61),
+    div:has(div#tabs-headers label:nth-of-type(62) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(62),
+    div:has(div#tabs-headers label:nth-of-type(63) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(63),
+    div:has(div#tabs-headers label:nth-of-type(64) > div > input[type="radio"]:checked) div#tabs-contents > :nth-child(64) {
+        /* deal with it */
+        display: flex;
+    }
+
+}
