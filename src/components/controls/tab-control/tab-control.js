@@ -14,7 +14,18 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
             const tabId = closeButton.dataset.id;
             this.closeTab(tabId);
         });
-        
+
+        // middle button click close tab event
+        document.getElementById("tabs-headers").addEventListener("auxclick", event => {
+            if (event.button === 1) {
+                const tabHeader = event.target.closest("label.tab-header");
+                if (tabHeader) {
+                    const tabId = tabHeader.dataset.id;
+                    this.closeTab(tabId);
+                }
+            }
+        });
+
         // drag tab event
         document.getElementById("tabs-headers").addEventListener("dragstart", event => {
             if (event.target.tagName.toLowerCase() === "label") {
@@ -119,14 +130,14 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
 
     }
 
-    render(id, icon, title, selected) {
+    render(id, extension, title, selected) {
 
         // create tab header
         document.getElementById("tabs-headers").insertAdjacentHTML("beforeend", `
             <label class="tab-header" data-id="${id}" draggable="true">
                 <div class="flex-columns flex-gap-small padding-medium">
                     <input type="radio" name="tab-control" ${selected ? "checked" : ""} />
-                    <img src="res/icons/extentions/${Helpers.GetIconFileName(icon)}.svg" alt="${icon}">
+                    <img src="res/icons/extentions/${Helpers.GetIconFileName(extension)}.svg" alt="${extension}">
                     <div class="title">${title}</div>
                     <div class="close-tab-button" data-id="${id}">
                         <img src="res/icons/close.svg" alt="Close">
@@ -135,10 +146,10 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
             </label>
         `);
 
-        // create tab content
+        // create tab content (holly fucking shit this is risky as fuck but it works!)
         document.getElementById("tabs-contents").insertAdjacentHTML("beforeend", `
-            <div class="tab-content" data-id="${id}">
-                ${title}
+            <div class="tab-content flex-grow" data-id="${id}">
+                <${extension}-editor data-file-id="${id}"></${extension}-editor>
             </div>
         `);
 
