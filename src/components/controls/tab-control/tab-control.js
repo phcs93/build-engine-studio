@@ -50,8 +50,10 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
         });
 
         // drop tab event
-        document.getElementById("tabs-headers").addEventListener("drop", event => {            
+        document.getElementById("tabs-headers").addEventListener("drop", event => {    
+
             if (event.target.closest("label.tab-header")) {
+
                 event.preventDefault();
                 const target = event.target.closest("label.tab-header");
                 target.classList.remove("drag-over-left");
@@ -68,18 +70,18 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
                 const toTabHeader = document.querySelector(`#tabs-headers label.tab-header[data-id="${toTabId}"]`);
 
                 if (position === "before") {
-                    target.parentNode.insertBefore(fromTabHeader, toTabHeader);
+                    document.querySelector("div#tabs-headers").insertBefore(fromTabHeader, toTabHeader);
                 } else {
-                    target.parentNode.insertBefore(fromTabHeader, toTabHeader.nextSibling);
+                    document.querySelector("div#tabs-headers").insertBefore(fromTabHeader, toTabHeader.nextSibling);
                 }
 
                 const fromTabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${fromTabId}"]`);
                 const toTabContent = document.querySelector(`#tabs-contents div.tab-content[data-id="${toTabId}"]`);
 
                 if (position === "before") {
-                    target.parentNode.insertBefore(fromTabContent, toTabContent);
+                    document.querySelector("div#tabs-contents").insertBefore(fromTabContent, toTabContent);
                 } else {
-                    target.parentNode.insertBefore(fromTabContent, toTabContent.nextSibling);
+                    document.querySelector("div#tabs-contents").insertBefore(fromTabContent, toTabContent.nextSibling);
                 }
 
                 this.selectTab(fromTabId);
@@ -91,7 +93,7 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
         Globals.Events.addEventListener("file-clicked", event => {
             // get number of open tabs
             if (document.querySelectorAll("#tabs-headers label.tab-header").length === 64) {
-                alert("Dude chill out, you have too many tabs open!");
+                alert("Dude, chill out, you have too many open tabs!");
                 return;
             }
             const fileId = event.detail.fileId;
