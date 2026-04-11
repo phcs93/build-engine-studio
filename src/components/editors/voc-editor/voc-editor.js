@@ -14,9 +14,8 @@ customElements.define("voc-editor", class VocEditor extends HTMLElement {
             
             const fileId = this.dataset.fileId;
             const vocBytes = Helpers.FindFileById(fileId).bytes;
-            this.vocBytes = vocBytes;
 
-            const wavBuffer = await this.vocToWav(this.vocBytes);
+            const wavBuffer = await this.vocToWav(vocBytes);
 
             const blob = new Blob([wavBuffer], { type: "audio/wav" });
             const url = URL.createObjectURL(blob);
@@ -41,6 +40,9 @@ customElements.define("voc-editor", class VocEditor extends HTMLElement {
 
             const ffmpeg = spawn(ffmpegPath, [
                 "-i", "pipe:0",
+                "-c:a", "pcm_s16le",
+                "-ar", "48000",
+                "-ac", "1",
                 "-f", "wav",
                 "pipe:1"
             ], {
