@@ -111,6 +111,10 @@ Helpers = {
             return "file";
         }  
         
+    },
+
+    GetEditorComponentByFileType(extension) {
+        
     }
 
 }
