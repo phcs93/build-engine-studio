@@ -1,0 +1,38 @@
+body {
+
+    div {
+        height: 100%;
+    }
+
+    form {
+
+        background-color: #1F1F1F;
+        margin-block-end: 0px;
+        flex-grow: 1;
+
+        & {
+
+            label {
+                font-family: "Candara";
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            button {
+                width: 64px;
+            }
+
+            button[type="submit"] {
+                background-color: var(--accent-color);
+            }
+
+            button[type="button"] {
+                background-color: #AFAFAF;
+                color: black;
+            }
+
+        }
+
+    }
+
+}

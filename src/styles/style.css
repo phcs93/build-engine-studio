@@ -15,6 +15,7 @@ input[type="text"] {
     font-family: "Segoe UI";
     font-size: 16px;
     height: 32px;
+    line-height: 32px;
     padding-left: 8px;
     padding-right: 8px;
     color: lightgray;

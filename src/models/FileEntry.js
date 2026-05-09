@@ -5,21 +5,21 @@ class FileEntry {
     constructor(name, bytes) {
 
         this.id = crypto.randomUUID();
-        this.name = name;
+        this.name = Helpers.TrimString(name);
 
         this.selected = false;
         this.expanded = false;
         this.open = false;
         this.saved = true;
 
-        this.extension = name.split(".").at(-1).toLowerCase();
+        this.extension = this.name.split(".").at(-1).toLowerCase();
 
         this.isStorageType = Object.values(Build.Enums.StorageType).includes(this.extension.toUpperCase());
 
         if (this.isStorageType) {
 
             // unserialize the storage instance from the bytes of the file entry
-            this.instance = Build.Models.Storage.Unserialize(bytes);
+            this.instance = new Build.Models.Storage(bytes);
 
             // we create entries for each file and store their bytes
             this.files = this.instance.Files.map(f => new FileEntry(f.name, f.bytes));
@@ -44,7 +44,7 @@ class FileEntry {
             this.instance.Files = this.files.map(f => ({ name: f.name, bytes: f.Serialize()}));
 
             // serialize the storage instance into bytes
-            const serialized = Build.Models.Storage.Serialize(this.instance);
+            const serialized = this.instance.Serialize();
 
             // clear to save memory
             this.instance.Files = [];

@@ -97,6 +97,10 @@ Helpers = {
 
     },
 
+    TrimString(string) {
+        return string.replace(/\x00/g, "");
+    },
+
     GetIconFileName(extension) {
 
         const iconFiles = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());

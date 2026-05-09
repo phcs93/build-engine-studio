@@ -2,7 +2,13 @@ import { app, BrowserWindow } from "electron";
 import remote from "@electron/remote/main/index.js";
 import menu from "electron-context-menu";
 
-app.whenReady().then(async () => {
+remote.initialize();
+
+app.on("browser-window-created", (_, w) => {
+    remote.enable(w.webContents);
+});   
+
+app.whenReady().then(async () => { 
 
     const win = new BrowserWindow({
         width: 1024,
@@ -17,9 +23,6 @@ app.whenReady().then(async () => {
             //enableRemoteModule: true
         }
     });
-
-    remote.initialize();
-    remote.enable(win.webContents);  
     
     app.isPackaged || menu();
     app.isPackaged || win.webContents.openDevTools();

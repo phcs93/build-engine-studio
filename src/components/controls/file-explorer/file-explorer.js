@@ -1,3 +1,5 @@
+const { BrowserWindow } = require("@electron/remote");
+
 customElements.define("file-explorer", class FileExplorer extends HTMLElement {
 
     constructor() {
@@ -140,7 +142,18 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 
                 const template = [
                     {
-                        label: "Export File",
+                        label: "Rename",
+                        click: async () => {
+                            const name = await prompt("ENTER FILE NAME", li.querySelector("span").textContent);
+                            if (name) {
+                                const file = Helpers.FindFileById(fileId);
+                                file.name = name;
+                                this.render();
+                            }
+                        }
+                    },
+                    {
+                        label: "Export",
                         click: () => {
                             const file = Helpers.FindFileById(fileId);
                             const blob = new Blob([file.Serialize()], { type: "application/octet-stream" });

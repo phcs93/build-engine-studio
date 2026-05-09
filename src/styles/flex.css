@@ -57,6 +57,11 @@ div.flex-justify-content-space-between {
     justify-content: space-between;
 }
 
+div.flex-justify-content-end {
+    display: flex;
+    justify-content: flex-end;
+}
+
 div.flex-align-items-center {
     display: flex;
     align-items: center;
