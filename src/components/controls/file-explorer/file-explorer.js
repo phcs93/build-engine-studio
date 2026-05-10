@@ -148,6 +148,29 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                             if (name) {
                                 const file = Helpers.FindFileById(fileId);
                                 file.name = name;
+                                Globals.Events.dispatchEvent(new CustomEvent("file-renamed", { detail: { fileId, name } }));
+                                this.render();
+                            }
+                        }
+                    },
+                    {
+                        label: "Duplicate",
+                        click: async () => {
+                            const file = Helpers.FindFileById(fileId);
+                            const name = file.name.replace(/(\.\w+)?$/, " Copy$1");
+                            const duplicate = new FileEntry(name, file.Serialize());
+                            Globals.Files.push(duplicate);
+                            Helpers.MoveFileById(duplicate.id, "after", fileId);
+                            this.render();
+                        }
+                    },
+                    {
+                        label: "Delete",
+                        click: async () => {
+                            const answer = confirm(`Are you sure you want to delete [${li.querySelector("span").textContent}]?`);
+                            if (answer) {
+                                Helpers.DeleteFileById(fileId);
+                                Globals.Events.dispatchEvent(new CustomEvent("file-deleted", { detail: { fileId } }));
                                 this.render();
                             }
                         }

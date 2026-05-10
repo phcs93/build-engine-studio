@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (e.ctrlKey && e.button === 1) {
                 webContents.zoomFactor = 1.0;
             }
-        }
+        };
     } else {
         webContents.zoomFactor = 1.0;
     }

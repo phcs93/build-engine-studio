@@ -128,6 +128,20 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
             }
         });
 
+        // listen for file renaming
+        Globals.Events.addEventListener("file-renamed", event => {
+            const fileId = event.detail.fileId;
+            const existingTab = document.querySelector(`#tabs-headers label.tab-header[data-id="${fileId}"]`);
+            if (existingTab) {
+                existingTab.querySelector(".title").textContent = event.detail.name;
+            }
+        });
+
+        // listen for file deletion
+        Globals.Events.addEventListener("file-deleted", event => {
+            this.closeTab(event.detail.fileId);
+        });
+
     }
 
     render(id, extension, title, selected) {
