@@ -117,8 +117,19 @@ Helpers = {
         
     },
 
-    GetEditorComponentByFileType(extension) {
-        
+    GetEditorComponentByFileType(id) {
+        const file = this.FindFileById(id);
+        switch (file.extension.toUpperCase()) {
+            case "DAT": {
+                switch (file.name.toUpperCase()) {
+                    case "PALETTE.DAT": return "palette-editor";
+                    case "LOOKUP.DAT": return "lookup-editor";
+                    default: return null;
+                }
+            }
+            case "VOC": return "voc-editor";
+            default: return null;
+        }
     }
 
 }

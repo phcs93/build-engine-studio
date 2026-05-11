@@ -68,7 +68,8 @@ tab-control {
                     background-color: #0E0E0E; 
                     border-top: 2px solid var(--accent-color);
                     padding-top: 14px;
-                    border-bottom: none;
+                    /* border-bottom: none; */
+                    border-bottom-color: #0E0E0E;
                     & > div.close-tab-button > img {
                         visibility: visible;
                     }

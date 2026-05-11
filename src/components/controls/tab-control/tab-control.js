@@ -15,7 +15,14 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
             this.closeTab(tabId);
         });
 
-        // middle button click close tab event
+        // prevent "middle mouse click auto scroll" when middle clicking tabs
+        document.getElementById("tabs-headers").addEventListener("mousedown", event => {
+            if (event.button === 1) {
+                event.preventDefault();
+            }
+        });
+
+        // close tabs with middle mouse click
         document.getElementById("tabs-headers").addEventListener("auxclick", event => {
             if (event.button === 1) {
                 const tabHeader = event.target.closest("label.tab-header");
@@ -160,10 +167,12 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
             </label>
         `);
 
-        // create tab content (holly fucking shit this is risky as fuck but it works!)
+        const editorComponent = Helpers.GetEditorComponentByFileType(id);
+
+        // create tab content
         document.getElementById("tabs-contents").insertAdjacentHTML("beforeend", `
             <div class="tab-content flex-grow" data-id="${id}">
-                <${extension}-editor data-file-id="${id}"></${extension}-editor>
+                <${editorComponent} data-file-id="${id}"></${editorComponent}>
             </div>
         `);
 
