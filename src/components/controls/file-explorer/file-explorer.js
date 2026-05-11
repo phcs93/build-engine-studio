@@ -143,6 +143,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 const template = [
                     {
                         label: "Rename",
+                        icon: electron.nativeImage.createFromPath("res/icons/context-menu/nucleo/rename.png").resize({ width: 16, height: 16 }),
                         click: async () => {
                             const name = await prompt("ENTER FILE NAME", li.querySelector("span").textContent);
                             if (name) {
@@ -155,6 +156,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                     },
                     {
                         label: "Duplicate",
+                        icon: electron.nativeImage.createFromPath("res/icons/context-menu/nucleo/duplicate.png").resize({ width: 16, height: 16 }),
                         click: async () => {
                             const file = Helpers.FindFileById(fileId);
                             const name = file.name.replace(/(\.\w+)?$/, " Copy$1");
@@ -166,6 +168,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                     },
                     {
                         label: "Delete",
+                        icon: electron.nativeImage.createFromPath("res/icons/context-menu/nucleo/delete.png").resize({ width: 16, height: 16 }),
                         click: async () => {
                             const answer = confirm(`Are you sure you want to delete [${li.querySelector("span").textContent}]?`);
                             if (answer) {
@@ -177,6 +180,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                     },
                     {
                         label: "Export",
+                        icon: electron.nativeImage.createFromPath("res/icons/context-menu/nucleo/export.png").resize({ width: 16, height: 16 }),
                         click: () => {
                             const file = Helpers.FindFileById(fileId);
                             const blob = new Blob([file.Serialize()], { type: "application/octet-stream" });
