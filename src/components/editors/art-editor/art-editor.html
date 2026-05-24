@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="art-editor.css">
+<script src="art-editor.js"></script>
+
+<template id="art-editor">
+
+    <div class="flex-rows">
+
+        <div class="flex-columns top-bar">
+            
+        </div>
+
+        <div class="grid">
+
+        </div>
+
+        <div class="flex-columns padding-medium flex-gap-medium bottom-bar">
+
+            <div class="flex-columns flex-gap-small">
+                <label>SIZE</label>
+                <input type="range" class="grid-size-range" min="8" max="512" step="2" value="128">
+                <label class="grid-size-label">128 px</label>
+            </div>
+
+            <label>
+                <input type="checkbox" class="transparency">
+                <span>TRANSPARENCY</span>
+            </label>
+
+            <label>
+                <input type="checkbox" class="background">
+                <span>BACKGROUND</span>
+            </label>  
+
+        </div>
+
+    </div>
+
+</template>

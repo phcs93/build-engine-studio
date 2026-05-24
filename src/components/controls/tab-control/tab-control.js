@@ -130,7 +130,7 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
                 this.selectTab(fileId);
             } else {
                 const file = Helpers.FindFileById(fileId);
-                this.render(fileId, file.extension, file.name, true);
+                this.render(fileId, file.type, file.name, true);
                 this.selectTab(fileId);
             }
         });
@@ -151,14 +151,14 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
 
     }
 
-    render(id, extension, title, selected) {
+    render(id, type, title, selected) {
 
         // create tab header
         document.getElementById("tabs-headers").insertAdjacentHTML("beforeend", `
             <label class="tab-header" data-id="${id}" draggable="true">
                 <div class="flex-columns flex-gap-small padding-medium">
                     <input type="radio" name="tab-control" ${selected ? "checked" : ""} />
-                    <img src="res/icons/extentions/${Helpers.GetIconFileName(extension)}.svg" alt="${extension}">
+                    <img src="res/icons/extentions/${Helpers.GetIconFileName(type)}.svg" alt="${type}">
                     <div class="title">${title}</div>
                     <div class="close-tab-button" data-id="${id}">
                         <img src="res/icons/close.svg" alt="Close">
@@ -167,12 +167,13 @@ customElements.define("tab-control", class TabControl extends HTMLElement {
             </label>
         `);
 
-        const editorComponent = Helpers.GetEditorComponentByFileType(id);
+        // ugh
+        const editorName = `${type.toLowerCase()}-editor`;
 
         // create tab content
         document.getElementById("tabs-contents").insertAdjacentHTML("beforeend", `
             <div class="tab-content flex-grow" data-id="${id}">
-                <${editorComponent} data-file-id="${id}"></${editorComponent}>
+                <${editorName} data-file-id="${id}"></${editorName}>
             </div>
         `);
 

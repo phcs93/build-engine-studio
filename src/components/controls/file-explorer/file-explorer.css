@@ -60,12 +60,14 @@ file-explorer {
 
         /* add line on top to indicate where file will be dropped */
         li.drag-over-top {
-            box-shadow: inset 0 1px 0 var(--accent-color);
+            /* box-shadow: inset 0 1px 0 var(--accent-color); */
+            box-shadow: inset 0 1px 0 white;
         }
 
         /* add line on bottom to indicate where file will be dropped */
         li.drag-over-bottom {
-            box-shadow: inset 0 -1px 0 var(--accent-color);
+            /* box-shadow: inset 0 -1px 0 var(--accent-color); */
+            box-shadow: inset 0 -1px 0 white;
         }
 
         /* set li size and hover effect */

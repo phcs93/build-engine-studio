@@ -60,7 +60,7 @@ Helpers = {
                         }
                         case "after": {
                             // special case for when moving a file to inside a container
-                            if (file.isStorageType && file.expanded) {
+                            if (file.isStorage && file.expanded) {
                                 file.files.splice(0, 0, fromFile);
                             } else {
                                 files.splice(i + 1, 0, fromFile);
@@ -103,13 +103,13 @@ Helpers = {
 
     GetIconFileName(extension) {
 
-        const iconFiles = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toLowerCase());
+        const iconFiles = fs.readdirSync("res/icons/extentions").map(file => file.split(".")[0].toUpperCase());
 
         if (iconFiles.includes(extension)) {
-            if (extension === "con") {
+            if (extension === "CON") {
                 return "con_";
             } else {
-                return extension;
+                return extension.toLowerCase();
             }
         } else {
             return "file";
@@ -117,19 +117,50 @@ Helpers = {
         
     },
 
-    GetEditorComponentByFileType(id) {
-        const file = this.FindFileById(id);
-        switch (file.extension.toUpperCase()) {
-            case "DAT": {
-                switch (file.name.toUpperCase()) {
-                    case "PALETTE.DAT": return "palette-editor";
-                    case "LOOKUP.DAT": return "lookup-editor";
-                    default: return null;
+    IsStorageFile(extension) {
+        return [ "GRP", "PK3", "RFF", "SSI", "WAD", "RTS" ].includes(extension.toUpperCase());
+    },
+
+    DetermineFileType (name, bytes) {
+
+        const extension = name.split(".").at(-1).toUpperCase();
+
+        if (name.indexOf(".") >= 0) {
+
+            // if file has extension, check if it is an ambiguous type (like some DATs that are actually GRPs for example)
+            switch (extension) {
+                case "DAT": {
+
+                    // check if it is a GRP
+                    const signature = Array.from(bytes.slice(0, 12)).map(c => String.fromCharCode(c)).join("");
+                    if (signature === "KenSilverman") {
+                        return "GRP";
+                    }
+
+                    // we may need to differentiate between PALETTE.DAT and LOOKUP.DAT
+                    // and also don't forget about .PAL and .RAW
+                    // oh boy
+                    return extension;
+
                 }
+                default: return extension;
             }
-            case "VOC": return "voc-editor";
-            default: return null;
+
+        } else {
+
+            // if file has no extension, check for some known signatures
+
+            // check is file is a VOC (usually RTS files contain VOC files named without an extension)
+            const signature = Array.from(bytes.slice(0, 19)).map(c => String.fromCharCode(c)).join("");
+            if (signature === "Creative Voice File") {
+                return "VOC";
+            }
+
+            return null;
+
         }
+
+        
     }
 
 }

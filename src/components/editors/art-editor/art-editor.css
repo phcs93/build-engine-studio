@@ -1,0 +1,80 @@
+art-editor {
+
+    display: flex;
+
+    --grid-size: 128;
+
+    div.top-bar, div.bottom-bar {
+        background-color: #0E0E0E;
+    }
+    
+    div.grid {
+        overflow-y: auto;
+        flex-grow: 1;
+    }
+
+    canvas {
+        border: 1px dotted #505050;
+        box-sizing: border-box;    
+        width: var(--grid-size);
+        height: var(--grid-size);
+        object-fit: contain;
+        image-rendering: pixelated;
+        &:hover {
+            cursor: grab !important;
+            border: 1px solid white;
+            animation: blink 0.5s ease-in-out infinite;
+        }
+        &:active {
+            cursor: grabbing !important;
+        }
+        /* &.drag-over-center {
+            border: 1px solid white;
+            animation: blink 0.5s ease-in-out infinite;
+        }
+        &.drag-over-left {
+            border-left: 1px solid white;
+            animation: blink-left 0.5s ease-in-out infinite;
+        }
+        &.drag-over-right {
+            border-right: 1px solid white;
+            animation: blink-right 0.5s ease-in-out infinite;
+        }
+        &[data-selected="true"] {
+            border: 1px solid white;
+            animation: blink 0.5s ease-in-out infinite;
+        } */
+    }
+
+    label.grid-size-label {
+        width: 64px;
+    }
+
+    &:has(input[type="checkbox"].background:checked) {
+        & div.grid {
+            background-image: url(../../../../res/transparency-background.png);
+        }
+        & canvas {
+            border: 1px solid black;            
+        }
+    }
+
+}
+
+@keyframes blink {
+    0% { border-color: #FFFFFF; }
+    50% { border-color: #000000; }
+    100% { border-color: #FFFFFF; }
+}
+
+@keyframes blink-left {
+    0% { border-left-color: #FFFFFF; }
+    50% { border-left-color: #000000; }
+    100% { border-left-color: #FFFFFF; }
+}
+
+@keyframes blink-right {
+    0% { border-right-color: #FFFFFF; }
+    50% { border-right-color: #000000; }
+    100% { border-right-color: #FFFFFF; }
+}

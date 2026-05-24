@@ -12,11 +12,11 @@ class FileEntry {
         this.open = false;
         this.saved = true;
 
-        this.extension = this.name.split(".").at(-1).toLowerCase();
+        this.type = Helpers.DetermineFileType(this.name, bytes);
 
-        this.isStorageType = Object.values(Build.Enums.StorageType).includes(this.extension.toUpperCase());
+        this.isStorage = this.type && Helpers.IsStorageFile(this.type);
 
-        if (this.isStorageType) {
+        if (this.isStorage) {
 
             // unserialize the storage instance from the bytes of the file entry
             this.instance = new Build.Models.Storage(bytes);
@@ -38,7 +38,7 @@ class FileEntry {
 
     Serialize() {
 
-        if (this.isStorageType) {
+        if (this.isStorage) {
 
             // transform file entries back into the format needed for the storage instance
             this.instance.Files = this.files.map(f => ({ name: f.name, bytes: f.Serialize()}));

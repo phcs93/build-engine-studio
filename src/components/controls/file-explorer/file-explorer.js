@@ -229,23 +229,23 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                 elements.push(`
                     <li draggable="true" 
                         data-id="${file.id}" 
-                        data-storage="${file.isStorageType}"
+                        data-storage="${file.isStorage}"
                         data-selected="${file.selected}"
                         data-expanded="${file.expanded}"
                         data-open="${file.open}"
                         data-saved="${file.saved}"
-                        data-extension="${file.extension}"
+                        data-type="${file.type}"
                         >
                         <div class="flex-columns flex-gap-small">
                             ${"<div class=\"ident\"></div>".repeat(level)}
                             <div class="caret"></div>
-                            <img src="res/icons/extentions/${Helpers.GetIconFileName(file.extension)}.svg" alt="${file.extension}">                            
+                            <img src="res/icons/extentions/${Helpers.GetIconFileName(file.type)}.svg" alt="${file.type}">                            
                             <span>${file.name}</span>
                         </div>
                     </li>
                 `);
 
-                if (file.isStorageType) {
+                if (file.isStorage) {
                     elements.push(generateHTML(file.files, level + 1));
                 }
 

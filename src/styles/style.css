@@ -11,6 +11,7 @@ hr {
     border-bottom: 1px solid #2B2B2B;
 }
 
+/* textbox */
 input[type="text"] {
     font-family: "Segoe UI";
     font-size: 16px;
@@ -29,6 +30,26 @@ input[type="text"] {
     }
 }
 
+/* slider */
+input[type="range"] {
+    flex-grow: 1;
+    accent-color: white;
+}
+
+/* checkbox */
+label:has(input[type="checkbox"]) {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    cursor: pointer;
+    & > input[type="checkbox"] {
+        cursor: pointer;
+        accent-color: white;
+        margin: 0px;
+    }
+}
+
+/* upload file button */
 label:has(>input[type="file"]), button {
     font-family: "Candara";
     font-size: 14px;
@@ -36,8 +57,10 @@ label:has(>input[type="file"]), button {
     height: 32px;
     padding-left: 8px;
     padding-right: 8px;
-    color: var(--contrast-color);
-    background-color: var(--accent-color);
+    /* color: var(--contrast-color); */
+    /* background-color: var(--accent-color); */
+    color: black;
+    background-color: white;
     border-radius: 5px;
     border: 1px solid #2B2B2B;    
     transition: filter 0.1s ease-in-out;
@@ -45,39 +68,34 @@ label:has(>input[type="file"]), button {
         filter: brightness(1.25);
         cursor: pointer;
     }
-}
-
-label:has(>input[type="file"]) {
-    line-height: 32px;
-    text-align: center;
-}
-
-label > input[type="file"] {
-    display: none;
+    &:has(>input[type="file"]) {
+        line-height: 32px;
+        text-align: center;
+    }
+    & > input[type="file"] {
+        display: none;
+    }
 }
 
 /* scrollbar */
-
-::-webkit-scrollbar {    
-    background-color: transparent;
-    height: 8px;
-    width: 8px;
+* {
+    ::-webkit-scrollbar {    
+        background-color: transparent;
+        height: 8px;
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background-color: transparent;    
+    }
+    ::-webkit-scrollbar-corner { 
+        background: transparent; 
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #434343;
+        border-radius: 10px;
+        transition: background-color 0.5s ease-in-out;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #939393;
+    }
 }
-
-::-webkit-scrollbar-track {
-    background-color: transparent;    
-}
-
-::-webkit-scrollbar-corner { 
-    background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #434343;
-    border-radius: 10px;
-    transition: background-color 0.5s ease-in-out;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #939393;
-} 

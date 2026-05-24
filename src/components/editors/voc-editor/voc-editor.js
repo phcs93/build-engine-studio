@@ -30,6 +30,8 @@ customElements.define("voc-editor", class VocEditor extends HTMLElement {
 
         } catch (err) {
 
+            this.querySelector("audio").remove();
+
             console.error(err);
 
             const error = this.querySelector("div.error-message");
