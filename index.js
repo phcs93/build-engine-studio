@@ -4,16 +4,16 @@ const app = electron.app;
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    const accentColor = tryGetAccentColor();
-    const contrastColor = getContrastColor(accentColor);
+    // const accentColor = tryGetAccentColor();
+    // const contrastColor = getContrastColor(accentColor);
 
-    document.querySelector(":root").style.setProperty("--accent-color", `#${accentColor}`);
-    document.querySelector(":root").style.setProperty("--contrast-color", `#${contrastColor}`);
+    // document.querySelector(":root").style.setProperty("--accent-color", `#${accentColor}`);
+    // document.querySelector(":root").style.setProperty("--contrast-color", `#${contrastColor}`);
 
-    electron.systemPreferences.addListener("accent-color-changed", (event, color) => {
-        document.querySelector(":root").style.setProperty("--accent-color", `#${color}`);
-        document.querySelector(":root").style.setProperty("--contrast-color", `#${getContrastColor(color)}`);
-    });
+    // electron.systemPreferences.addListener("accent-color-changed", (event, color) => {
+    //     document.querySelector(":root").style.setProperty("--accent-color", `#${color}`);
+    //     document.querySelector(":root").style.setProperty("--contrast-color", `#${getContrastColor(color)}`);
+    // });
 
     if (!app.isPackaged) {
         document.body.onwheel = e => {        

@@ -2,6 +2,7 @@ label {
     font-family: "Candara";
     font-size: 14px;
     font-weight: bold;
+    align-content: center;
 }
 
 hr {
@@ -30,10 +31,29 @@ input[type="text"] {
     }
 }
 
+/* select */
+select {
+    font-family: "Segoe UI";
+    font-size: 16px;
+    height: 32px;
+    line-height: 32px;
+    padding-left: 8px;
+    padding-right: 8px;
+    color: lightgray;
+    background-color: #090909;
+    border-radius: 5px;
+    border: 1px solid #2B2B2B;
+    flex-grow: 1;
+    outline: none;
+    &:focus {
+        border: 1px solid var(--accent-color);
+    }
+}
+
 /* slider */
 input[type="range"] {
     flex-grow: 1;
-    accent-color: white;
+    accent-color: var(--accent-color);
 }
 
 /* checkbox */
@@ -44,7 +64,7 @@ label:has(input[type="checkbox"]) {
     cursor: pointer;
     & > input[type="checkbox"] {
         cursor: pointer;
-        accent-color: white;
+        accent-color: var(--accent-color);
         margin: 0px;
     }
 }
@@ -57,10 +77,8 @@ label:has(>input[type="file"]), button {
     height: 32px;
     padding-left: 8px;
     padding-right: 8px;
-    /* color: var(--contrast-color); */
-    /* background-color: var(--accent-color); */
-    color: black;
-    background-color: white;
+    color: var(--contrast-color);
+    background-color: var(--accent-color);
     border-radius: 5px;
     border: 1px solid #2B2B2B;    
     transition: filter 0.1s ease-in-out;

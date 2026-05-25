@@ -66,8 +66,7 @@ tab-control {
             &:has(input[type="radio"]:checked) {
                 & > div {
                     background-color: #0E0E0E; 
-                    /* border-top: 2px solid var(--accent-color); */
-                    border-top: 2px solid white;
+                    border-top: 2px solid var(--accent-color);
                     padding-top: 14px;
                     /* border-bottom: none; */
                     border-bottom-color: #0E0E0E;

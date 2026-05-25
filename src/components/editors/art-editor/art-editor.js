@@ -7,33 +7,45 @@ customElements.define("art-editor", class ArtEditor extends HTMLElement {
 
     connectedCallback() {
 
+        const fs = require("fs");
+
+        // load default palette (duke nukem 3d)
+        this.colors = JSON.parse(fs.readFileSync("res/palettes/duke-nukem-3d.json"));
+        // render transparency indexes and trasparent by default
+        this.transparency = true;
+
+        // change palette event
+        this.querySelector("select.palette-select").onchange = e => {
+            this.colors = JSON.parse(fs.readFileSync(`res/palettes/${e.target.value}.json`));
+            this.render();
+        };
+
         // change grid size
         this.querySelector("input.grid-size-range").oninput = e => {
             this.querySelector("label.grid-size-label").innerHTML = e.target.value + " px";
             this.style.setProperty("--grid-size", `${e.target.value}px`);
         };
 
-        const colors = [];
+        // toggle transparency
+        this.querySelector("input.transparency").onchange = e => {
+            this.transparency = e.target.checked;
+            this.render();
+        };
 
-        for (let i = 0; i < 256; i++) {
-            const c = (i % 16) * 16;
-            colors[i] = [c,c,c];
-        }
-
-        this.render(colors, true);
+        // render tile grid
+        this.render();
 
     }
 
-    // colors is supposed to be the resolved color table
-    // with applied pallet, shade and swap
-    // each of the 256 indexes needs to be a [r,g,b] array
-    render(colors, transparency) {
+    render() {
 
         const file = Helpers.FindFileById(this.dataset.fileId);
 
         const art = new Build.Models.Art(file.bytes);
 
         const grid = this.querySelector("div.grid");
+
+        grid.innerHTML = null;
 
         for (let t = 0; t < art.Tiles.length; t++) {
 
@@ -54,19 +66,12 @@ customElements.define("art-editor", class ArtEditor extends HTMLElement {
                 for (let x = 0; x < tile.length; x++) {     
                     for (let y = 0; y < tile[0].length; y++) {                                       
                         const index = tile[x][y];
-                        const color = colors[index];
+                        const color = this.colors[index];
                         const i = x + y * tile.length;
                         data.data[i * 4 + 0] = color[0];
                         data.data[i * 4 + 1] = color[1];
                         data.data[i * 4 + 2] = color[2];
-                        data.data[i * 4 + 3] = transparency ? (index === 255 ? 0 : 255) : 255;
-                        // const index = tile[x][y];
-                        // const color = [index, index, index];
-                        // const i = x + y * tile.length;
-                        // data.data[i * 4 + 0] = color[0];
-                        // data.data[i * 4 + 1] = color[1];
-                        // data.data[i * 4 + 2] = color[2];
-                        // data.data[i * 4 + 3] = index === 255 ? 0 : 255;
+                        data.data[i * 4 + 3] = this.transparency ? (index === 255 ? 0 : 255) : 255;
                     }
                 }
 
