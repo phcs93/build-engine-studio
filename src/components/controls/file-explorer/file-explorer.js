@@ -167,10 +167,10 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                         }
                     },
                     {
-                        label: "Delete",
+                        label: "Remove",
                         icon: electron.nativeImage.createFromPath("res/icons/context-menu/nucleo/delete.png").resize({ width: 16, height: 16 }),
                         click: async () => {
-                            const answer = confirm(`Are you sure you want to delete [${li.querySelector("span").textContent}]?`);
+                            const answer = confirm(`All changes will be lost. Are you sure you want to remove [${li.querySelector("span").textContent}]?`);
                             if (answer) {
                                 Helpers.DeleteFileById(fileId);
                                 Globals.Events.dispatchEvent(new CustomEvent("file-deleted", { detail: { fileId } }));
