@@ -1,3 +1,7 @@
+// ============================================================
+// WAV EDITOR
+// ============================================================
+
 customElements.define("wav-editor", class WavEditor extends HTMLElement {
 
     constructor() {
@@ -5,118 +9,286 @@ customElements.define("wav-editor", class WavEditor extends HTMLElement {
         super();
 
         this.appendChild(
-            document.getElementById("wav-editor").content.cloneNode(true)
+            document
+                .getElementById("wav-editor")
+                .content
+                .cloneNode(true)
         );
 
-        this._audioUrl = null;        
+        // URL temporária usada pelo elemento <audio>
+        this._audioUrl = null;
+
+        // Bytes do WAV atualmente carregado
+        this._wavBytes = null;
+
+        // Referência ao arquivo original
+        this._file = null;
 
     }
+
+
+    // =========================================================
+    // INICIALIZAÇÃO
+    // =========================================================
 
     async connectedCallback() {
 
         try {
 
             const fileId = this.dataset.fileId;
-            const file = Helpers.FindFileById(fileId);
+
+            const file =
+                Helpers.FindFileById(fileId);
+
 
             if (!file || !file.bytes) {
-                throw new Error("Arquivo WAV não encontrado");
+
+                throw new Error(
+                    "Arquivo WAV não encontrado"
+                );
+
             }
 
+
+            // Guarda a referência do arquivo
+            this._file = file;
+
+
+            // Carrega e reproduz o WAV
             this.attachWav(file.bytes);
 
-            const error = this.querySelector("div.error-message");
-            if (error) error.remove();
+
+            // Remove mensagem de erro, se existir
+            const error =
+                this.querySelector(
+                    "div.error-message"
+                );
+
+
+            if (error) {
+                error.remove();
+            }
+
 
         } catch (err) {
 
-            const audioEl = this.querySelector("audio");
-            if (audioEl) audioEl.remove();
+            // Remove o player em caso de erro
+            const audioEl =
+                this.querySelector("audio");
+
+
+            if (audioEl) {
+                audioEl.remove();
+            }
+
 
             console.error(err);
 
-            const error = this.querySelector("div.error-message");
+
+            // Exibe o erro
+            const error =
+                this.querySelector(
+                    "div.error-message"
+                );
+
 
             if (error) {
-                error.textContent = err.message || "Erro ao reproduzir WAV";
+
+                error.textContent =
+                    err.message ||
+                    "Erro ao reproduzir WAV";
+
             }
 
         }
 
     }
 
+
+    // =========================================================
+    // DESTRUIÇÃO
+    // =========================================================
+
     disconnectedCallback() {
 
-        if (this._audioUrl) {
-            URL.revokeObjectURL(this._audioUrl);
-            this._audioUrl = null;
-        }
+        this.revokeAudioUrl();
 
     }
 
+
+    // =========================================================
+    // CARREGA O WAV
+    // =========================================================
+
     attachWav(bytes) {
 
-        const data = bytes instanceof Uint8Array
-            ? bytes
-            : new Uint8Array(bytes);
+        // -----------------------------------------------------
+        // Converte para Uint8Array
+        // -----------------------------------------------------
+
+        const data =
+            bytes instanceof Uint8Array
+                ? bytes
+                : new Uint8Array(bytes);
+
+
+        // -----------------------------------------------------
+        // Validação básica
+        // -----------------------------------------------------
 
         if (data.length < 12) {
-            throw new Error("Arquivo WAV inválido ou corrompido");
+
+            throw new Error(
+                "Arquivo WAV inválido ou corrompido"
+            );
+
         }
 
+
+        // -----------------------------------------------------
         // Verifica RIFF
-        const riff = String.fromCharCode(
-            data[0],
-            data[1],
-            data[2],
-            data[3]
-        );
+        // -----------------------------------------------------
 
+        const riff =
+            String.fromCharCode(
+                data[0],
+                data[1],
+                data[2],
+                data[3]
+            );
+
+
+        // -----------------------------------------------------
         // Verifica WAVE
-        const wave = String.fromCharCode(
-            data[8],
-            data[9],
-            data[10],
-            data[11]
-        );
+        // -----------------------------------------------------
 
-        if (riff !== "RIFF" || wave !== "WAVE") {
-            throw new Error("Arquivo WAV inválido");
+        const wave =
+            String.fromCharCode(
+                data[8],
+                data[9],
+                data[10],
+                data[11]
+            );
+
+
+        if (
+            riff !== "RIFF" ||
+            wave !== "WAVE"
+        ) {
+
+            throw new Error(
+                "Arquivo WAV inválido"
+            );
+
         }
 
-        // Libera a URL anterior, caso o componente seja reutilizado
-        if (this._audioUrl) {
-            URL.revokeObjectURL(this._audioUrl);
-            this._audioUrl = null;
-        }
 
-        // Cria o Blob diretamente com o WAV original.
-        // Não fazemos conversão nem reamostragem.
-        const wavBlob = new Blob(
-            [data],
-            { type: "audio/wav" }
-        );
+        // -----------------------------------------------------
+        // Guarda uma cópia dos bytes
+        // -----------------------------------------------------
 
-        const audioUrl = URL.createObjectURL(wavBlob);
+        this._wavBytes =
+            new Uint8Array(data);
 
-        const audioEl = this.querySelector("audio");
+
+        // -----------------------------------------------------
+        // Remove URL anterior
+        // -----------------------------------------------------
+
+        this.revokeAudioUrl();
+
+
+        // -----------------------------------------------------
+        // Cria Blob do WAV
+        // -----------------------------------------------------
+
+        const wavBlob =
+            new Blob(
+                [this._wavBytes],
+                {
+                    type: "audio/wav"
+                }
+            );
+
+
+        // -----------------------------------------------------
+        // Cria URL para reprodução
+        // -----------------------------------------------------
+
+        const audioUrl =
+            URL.createObjectURL(
+                wavBlob
+            );
+
+
+        // -----------------------------------------------------
+        // Localiza elemento <audio>
+        // -----------------------------------------------------
+
+        const audioEl =
+            this.querySelector(
+                "audio"
+            );
+
 
         if (!audioEl) {
-            throw new Error("Elemento <audio> não encontrado");
+
+            // Libera a URL caso não exista player
+            URL.revokeObjectURL(audioUrl);
+
+
+            throw new Error(
+                "Elemento <audio> não encontrado"
+            );
+
         }
 
+
+        // -----------------------------------------------------
+        // Configura o player
+        // -----------------------------------------------------
+
         audioEl.src = audioUrl;
+
         audioEl.load();
 
-        // Autoplay opcional
-        audioEl.play().catch(() => {});
 
-        this._audioUrl = audioUrl;
+        // -----------------------------------------------------
+        // Guarda a URL atual
+        // -----------------------------------------------------
 
-        console.log({
-            format: "WAV",
-            size: (data.byteLength / 1024).toFixed(1) + " KB"
-        });
+        this._audioUrl =
+            audioUrl;
+
+
+        // -----------------------------------------------------
+        // Reproduz automaticamente
+        // -----------------------------------------------------
+
+        audioEl
+            .play()
+            .catch(() => {});
+
+    }
+
+
+    // =========================================================
+    // LIBERA URL DO ÁUDIO
+    // =========================================================
+
+    revokeAudioUrl() {
+
+        if (!this._audioUrl) {
+            return;
+        }
+
+
+        URL.revokeObjectURL(
+            this._audioUrl
+        );
+
+
+        this._audioUrl = null;
 
     }
 
