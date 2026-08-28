@@ -2,7 +2,7 @@ const crypto = require("crypto");
 
 class FileEntry {
 
-    constructor(name, bytes) {
+    constructor(name, bytes) {        
 
         this.id = crypto.randomUUID();
         this.name = Helpers.TrimString(name);

@@ -149,11 +149,18 @@ Helpers = {
         } else {
 
             // if file has no extension, check for some known signatures
+            let signature = null;
 
             // check is file is a VOC (usually RTS files contain VOC files named without an extension)
-            const signature = Array.from(bytes.slice(0, 19)).map(c => String.fromCharCode(c)).join("");
+            signature = Array.from(bytes.slice(0, 19)).map(c => String.fromCharCode(c)).join("");
             if (signature === "Creative Voice File") {
                 return "VOC";
+            }
+
+            // check if file is a WAV
+            signature = Array.from(bytes.slice(0, 4)).map(c => String.fromCharCode(c)).join("");
+            if (signature === "RIFF") {
+                return "WAV";
             }
 
             return null;
