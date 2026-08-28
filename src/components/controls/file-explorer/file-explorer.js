@@ -212,9 +212,9 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                         {
                             label: "Normalize Volume",
                             icon: electron.nativeImage.createFromPath("res/icons/context-menu/nucleo/normalize.png").resize({ width: 16, height: 16 }),
-                            click: async () => {
-                                const answer = confirm(`Normalize all RTS audio entries to -10 dBFS? (ideal volume for ingame RTS voices)`);
-                                if (answer) {
+                            click: async () => {                               
+                                const targetRmsDb = await prompt("Normalize all RTS audio entries (-10 dBFS recommended)", -10);
+                                if (targetRmsDb !== null) {
                                     for (const f of file.files) {
                                         switch (f.type) {
                                             case "VOC": {
@@ -222,7 +222,7 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
                                                 break;
                                             }
                                             case "WAV": {
-                                                f.bytes = WAV.NormalizeWAV(f.bytes, -10);
+                                                f.bytes = WAV.NormalizeWAV(f.bytes, targetRmsDb);
                                                 break;
                                             }
                                         }

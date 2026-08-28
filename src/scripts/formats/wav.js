@@ -2,6 +2,8 @@ WAV = {
 
     NormalizeWAV (bytes, targetRmsDb) {
 
+        targetRmsDb = parseFloat(targetRmsDb);
+
         // =========================================================
         // VALIDAÇÃO DOS PARÂMETROS
         // =========================================================
