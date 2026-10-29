@@ -75,6 +75,9 @@ file-explorer {
             &:hover {
                 background-color: #232323;
             }
+            /* &[data-selected="true"] {
+                background-color: var(--accent-color);
+            } */
         }
 
         /* markers to both ident the item and to draw a straight line on the left */

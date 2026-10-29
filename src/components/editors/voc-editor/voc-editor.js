@@ -249,14 +249,6 @@ customElements.define("voc-editor", class VocEditor extends HTMLElement {
         }
 
         this._audioUrl = audioUrl;
-
-        console.log({
-            codec,
-            originalSampleRate: sampleRate,
-            outputRate,
-            duration: (samples.length / outputRate).toFixed(2) + "s",
-            size: (wavBlob.size / 1024).toFixed(1) + " KB"
-        });
         
     }
 

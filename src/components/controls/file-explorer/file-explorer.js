@@ -123,10 +123,14 @@ customElements.define("file-explorer", class FileExplorer extends HTMLElement {
         // left click file event
         document.getElementById("files").addEventListener("click", event => {
             const li = event.target.closest("li");
-            if (!li || li.dataset.storage === "true") return;
-            const fileId = li.dataset.id;
-            // dispatch event so that other components can listen to it and react accordingly (e.g. open file in tab control)
-            Globals.Events.dispatchEvent(new CustomEvent("file-clicked", { detail: { fileId } }));
+            if (li) {
+                const fileId = li.dataset.id;
+                Helpers.FindFileById(fileId).selected = true;
+                this.render();            
+                if (li.dataset.storage === "true") return;   
+                // dispatch event so that other components can listen to it and react accordingly (e.g. open file in tab control)
+                Globals.Events.dispatchEvent(new CustomEvent("file-clicked", { detail: { fileId } }));
+            }            
         });
 
         // right click file event (context menu)
